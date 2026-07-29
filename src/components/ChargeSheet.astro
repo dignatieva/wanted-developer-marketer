@@ -95,6 +95,19 @@ const prepared = charges.map((charge) => {
   </div>
 </section>
 
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.exhibit__link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const charge = link.closest('li.charge');
+      const chargeNumber = charge?.querySelector('.charge__n')?.textContent?.trim() ?? '';
+      window.posthog?.capture('exhibit_opened', {
+        label: link.textContent?.trim() ?? '',
+        charge_number: chargeNumber,
+      });
+    });
+  });
+</script>
+
 <style>
   .charges {
     padding: clamp(1rem, 3vw, 2rem) 0 clamp(2.5rem, 7vw, 4.5rem);

@@ -46,6 +46,24 @@ const { partners } = Astro.props;
   </ul>
 </div>
 
+<script>
+  document.querySelectorAll<HTMLElement>('.plate').forEach((plate) => {
+    const partnerName = plate.querySelector('.plate__name')?.textContent?.trim()
+      ?? plate.querySelector<HTMLImageElement>('.plate__logo')?.alt
+      ?? '';
+    const product = plate.querySelector('.plate__product')?.textContent?.trim() ?? '';
+
+    plate.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        window.posthog?.capture('partner_link_followed', {
+          partner: partnerName,
+          product,
+        });
+      });
+    });
+  });
+</script>
+
 <style>
   .partners {
     margin-top: clamp(1.1rem, 3vw, 1.5rem);

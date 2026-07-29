@@ -11,7 +11,7 @@ import { closing, suspect } from '../data/dossier';
       {closing.body.map((p) => <p class="close__p lede">{p}</p>)}
 
       <div class="close__actions">
-        <a class="btn btn--red" href={`mailto:${suspect.email}?subject=Re: Notice %23${suspect.noticeId}`}>
+        <a class="btn btn--red" href={`mailto:${suspect.email}?subject=Re: Notice %23${suspect.noticeId}`} data-contact>
           Bring her in
         </a>
         <button type="button" class="btn no-print" data-print>Print the poster</button>
@@ -51,6 +51,10 @@ import { closing, suspect } from '../data/dossier';
   document.querySelector('[data-print]')?.addEventListener('click', () => {
     window.posthog?.capture('poster_printed');
     window.print();
+  });
+
+  document.querySelector('[data-contact]')?.addEventListener('click', () => {
+    window.posthog?.capture('contact_initiated', { method: 'email' });
   });
 </script>
 

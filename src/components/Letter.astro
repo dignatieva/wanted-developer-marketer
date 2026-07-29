@@ -20,11 +20,18 @@ import { letter, suspect } from '../data/dossier';
           class="link"
           href={suspect.jobUrl}
           target="_blank"
-          rel="noreferrer">the notice as posted</a>.
+          rel="noreferrer"
+          data-job-link>the notice as posted</a>.
       </p>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelector('[data-job-link]')?.addEventListener('click', () => {
+    window.posthog?.capture('job_posting_checked');
+  });
+</script>
 
 <style>
   .letter {

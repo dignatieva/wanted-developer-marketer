@@ -1,0 +1,635 @@
+---
+import { Image } from 'astro:assets';
+import { alsoKnownFor, mugshot, stamps, suspect } from '../data/dossier';
+---
+
+<section class="poster-zone">
+  <article class="poster">
+    <div class="poster__frame">
+      <p class="poster__notice overline">
+        Notice №&nbsp;{suspect.noticeId} &nbsp;·&nbsp; Marketing Department &nbsp;·&nbsp; Posted this quarter
+      </p>
+
+      <h1 class="poster__word display letterpress">Wanted</h1>
+
+      <div class="rule poster__rule" aria-hidden="true">
+        <span class="rule__mark">✦ ✦ ✦</span>
+      </div>
+
+      <p class="poster__role slab letterpress">{suspect.role}</p>
+
+      <div class="poster__portrait">
+        {/*
+          The veil is a button laid over the photo, not a wrapper around it, so
+          once it is dismissed it leaves the DOM entirely and the image is not
+          left sitting inside a pointless control.
+        */}
+        <div class="portrait" data-portrait>
+          <Image
+            class="poster__portrait-img"
+            src={mugshot.src}
+            alt={mugshot.alt}
+            widths={[272, 544]}
+            sizes="(max-width: 30rem) 60vw, 272px"
+            loading="eager"
+          />
+          <button class="portrait__veil" type="button" data-veil aria-label="Reveal the suspect’s photograph">
+            <svg class="portrait__figure" viewBox="0 0 100 125" aria-hidden="true">
+              <circle cx="50" cy="40" r="21" />
+              <path d="M16 125c0-21 3-33 11-41 6-6 14-10 23-10s17 4 23 10c8 8 11 20 11 41z" />
+              <text class="portrait__q" x="50" y="41" text-anchor="middle" dominant-baseline="central">?</text>
+            </svg>
+            <span class="portrait__label">No photograph on file</span>
+          </button>
+        </div>
+
+        <p class="poster__portrait-cap">{mugshot.caption}</p>
+
+        <p class="portrait__hint" data-hint aria-hidden="true">
+          <span class="portrait__hint-hover">Hover to identify</span>
+          <span class="portrait__hint-tap">Tap to identify</span>
+        </p>
+      </div>
+
+      <h2 class="poster__name display letterpress">{suspect.name}</h2>
+      <p class="poster__alias">alias “{suspect.alias}”</p>
+
+      <dl class="poster__facts">
+        <div class="poster__fact poster__fact--reward">
+          <dt>Reward</dt>
+          <dd>
+            <span class="poster__amount slab">{suspect.reward}</span>
+            <span class="poster__amount-note">{suspect.rewardNote}</span>
+          </dd>
+        </div>
+        <div class="poster__fact">
+          <dt>Last seen</dt>
+          <dd>
+            {suspect.lastSeen.before}<a
+              class="link"
+              href={suspect.lastSeen.linkHref}
+              target="_blank"
+              rel="noreferrer">{suspect.lastSeen.linkText}</a>{suspect.lastSeen.after}
+          </dd>
+        </div>
+        <div class="poster__fact">
+          <dt>Wanted by</dt>
+          <dd>{suspect.wantedBy}</dd>
+        </div>
+      </dl>
+
+      <div class="poster__also">
+        <p class="poster__also-label overline">Also known for</p>
+        <ul class="poster__also-list">
+          {alsoKnownFor.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <p class="poster__stamp stamp only-poster" aria-hidden="true">{stamps.poster}</p>
+    <p class="poster__stamp-plain stamp only-plain">{stamps.plain}</p>
+  </article>
+
+  <p class="poster__scroll only-poster no-print" aria-hidden="true">
+    read the charges ↓
+  </p>
+
+  {/* Without JS the veil never lifts on touch, so remove it entirely. */}
+  <noscript>
+    <style>
+      .portrait__veil,
+      .portrait__hint {
+        display: none !important;
+      }
+    </style>
+  </noscript>
+</section>
+
+<script>
+  const portrait = document.querySelector<HTMLElement>('[data-portrait]');
+  const veil = document.querySelector<HTMLButtonElement>('[data-veil]');
+  const hint = document.querySelector<HTMLElement>('[data-hint]');
+
+  if (portrait && veil && hint) {
+    hint.dataset.live = '';
+
+    let revealed = false;
+
+    const reveal = (trigger: string) => {
+      if (revealed) return;
+      revealed = true;
+
+      portrait.dataset.revealed = '';
+      delete hint.dataset.live;
+      hint.dataset.done = '';
+
+      window.posthog?.capture('suspect_identified', { trigger });
+
+      // Drop the control once its job is done, so it stops being a focus stop
+      // and a button announced around a decorative graphic.
+      const drop = () => veil.remove();
+      veil.addEventListener('transitionend', drop, { once: true });
+      setTimeout(drop, 900); // in case the transition never fires
+    };
+
+    veil.addEventListener('click', () => reveal('tap'));
+    veil.addEventListener('focus', () => reveal('keyboard'));
+    portrait.addEventListener('pointerenter', () => reveal('hover'));
+
+    // "On scroll": the moment the reader commits to the page, the suspect is
+    // identified. The poster sits above the fold, so an intersection observer
+    // would fire instantly and there would be no reveal left to watch.
+    const onScroll = () => {
+      if (window.scrollY > 60) {
+        reveal('scroll');
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>
+
+<style>
+  .poster-zone {
+    padding: clamp(2rem, 6vw, 4.5rem) 0 clamp(1.5rem, 4vw, 3rem);
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, var(--paper-lit), transparent 70%),
+      var(--paper);
+  }
+
+  :root[data-mode='plain'] .poster-zone {
+    background: var(--paper);
+  }
+
+  .poster {
+    position: relative;
+    width: min(100% - 2rem, 44rem);
+    margin-inline: auto;
+    background: var(--paper-lit);
+    border: 4px double var(--ink);
+    padding: 0.55rem;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      6px 8px 0 rgba(36, 28, 20, 0.12),
+      0 22px 44px -20px rgba(36, 28, 20, 0.45);
+  }
+
+  .poster__frame {
+    border: 1px solid var(--ink);
+    padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2rem);
+    text-align: center;
+    /* Reserves the bottom-right seal zone. Without it the stamp lands across the
+       footer line and makes both unreadable. Poster mode only — plain mode has
+       no stamp to make room for. */
+    padding-bottom: clamp(6rem, 13vw, 8rem);
+    /* Makes cqw units below resolve against this frame's inner width, so the
+       display type is sized by the poster rather than by the viewport. */
+    container-type: inline-size;
+  }
+
+  :root[data-mode='plain'] .poster {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  :root[data-mode='plain'] .poster__frame {
+    border: 0;
+    text-align: left;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .poster__notice {
+    margin: 0 0 clamp(0.75rem, 2vw, 1.25rem);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+  }
+
+  /* The word itself. Big, letterspaced, pressed into the page.
+     "WANTED" has no space in it, so it can never wrap — if it is sized off the
+     viewport it eventually punches straight through the frame. Rye renders this
+     word at ~4.91x its font-size, so 19.5cqw keeps it just inside the rules at
+     every width. Adjust the multiplier, not the unit, if you change the word. */
+  .poster__word {
+    margin: 0;
+    font-size: clamp(2.5rem, 19.5cqw, 9rem);
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  :root[data-mode='plain'] .poster__word {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    line-height: 1.15;
+  }
+
+  .poster__rule {
+    margin: clamp(0.5rem, 2vw, 0.9rem) 0;
+  }
+
+  :root[data-mode='plain'] .poster__rule {
+    display: none;
+  }
+
+  .poster__role {
+    margin: 0;
+    font-size: clamp(1.375rem, 5.5vw, 2.75rem);
+    color: var(--red);
+  }
+
+  :root[data-mode='plain'] .poster__role {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 0.35rem;
+  }
+
+  /* --- Portrait --- */
+  .poster__portrait {
+    margin: clamp(1.25rem, 4vw, 2rem) auto clamp(0.75rem, 2vw, 1.25rem);
+    width: min(100%, 17rem);
+  }
+
+  /* :global because the <img> is emitted by Astro's Image component. */
+  .poster__portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border: 2px solid var(--ink);
+    /* Sepia + reduced saturation is what makes a phone selfie read as a
+       19th-century printed portrait rather than a photo pasted onto paper. */
+    filter: sepia(0.42) contrast(1.12) saturate(0.7);
+    box-shadow: 0 6px 18px -10px rgba(36, 28, 20, 0.7);
+  }
+
+  :root[data-mode='plain'] .poster__portrait {
+    width: 9rem;
+    margin-inline: 0;
+  }
+
+  :root[data-mode='plain'] .poster__portrait :global(img) {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    filter: none;
+    box-shadow: none;
+  }
+
+  /* --- The identity veil --- */
+  .portrait {
+    position: relative;
+    display: block;
+  }
+
+  .portrait__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-content: center;
+    gap: 0.5rem;
+    /* Opaque paper, so this reads as "no photograph on file" rather than as a
+       blurred photo you might still make a face out of. */
+    background: var(--paper-deep);
+    border: 2px solid var(--ink);
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    opacity: 1;
+    scale: 1;
+    transition:
+      opacity 620ms cubic-bezier(0.4, 0, 0.2, 1),
+      scale 620ms cubic-bezier(0.4, 0, 0.2, 1),
+      filter 620ms ease;
+  }
+
+  /* Lifts on hover for pointer users even with no JS at all. */
+  @media (hover: hover) {
+    .portrait:hover .portrait__veil {
+      opacity: 0;
+      scale: 1.07;
+      filter: blur(3px);
+      pointer-events: none;
+    }
+  }
+
+  .portrait__veil:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+  }
+
+  /* Sticky reveal, set by JS on hover, tap, focus or first scroll. Once the face
+     is out it stays out — re-hiding it would just be a puzzle for the reader. */
+  .portrait[data-revealed] .portrait__veil {
+    opacity: 0;
+    scale: 1.07;
+    filter: blur(3px);
+    pointer-events: none;
+  }
+
+  .portrait__figure {
+    width: clamp(5rem, 42%, 8rem);
+    margin-inline: auto;
+    fill: var(--ink);
+    opacity: 0.82;
+  }
+
+  .portrait__q {
+    fill: var(--paper-lit);
+    font-family: var(--display);
+    font-size: 30px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .portrait:not([data-revealed]) .portrait__q {
+      animation: q-blink 2.6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes q-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  .portrait__label {
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    padding-inline: 0.75rem;
+  }
+
+  /* --- Hint --- */
+  .portrait__hint {
+    margin: 0.35rem 0 0;
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--red);
+    transition: opacity 400ms ease;
+  }
+
+  .portrait__hint-hover {
+    display: none;
+  }
+
+  @media (hover: hover) {
+    .portrait__hint-hover {
+      display: inline;
+    }
+
+    .portrait__hint-tap {
+      display: none;
+    }
+  }
+
+  /* Hidden until JS confirms the veil is live, and gone for good after reveal. */
+  .portrait__hint {
+    opacity: 0;
+  }
+
+  .portrait__hint[data-live] {
+    opacity: 1;
+  }
+
+  .portrait__hint[data-done] {
+    opacity: 0;
+  }
+
+  :root[data-mode='plain'] .portrait__veil,
+  :root[data-mode='plain'] .portrait__hint {
+    display: none;
+  }
+
+  .poster__portrait-cap {
+    margin: 0.5rem 0 0;
+    font-family: var(--ui);
+    font-size: 0.625rem;
+    /* Eased off from 0.16em: this caption is a sentence now, not two words, and
+       wide tracking on a wrapping line at 10px is where legibility dies. */
+    letter-spacing: 0.11em;
+    line-height: 1.7;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: var(--ink-faint);
+  }
+
+  /* --- Identity --- */
+  .poster__name {
+    margin: 0;
+    font-size: clamp(1.75rem, 7vw, 3.25rem);
+    letter-spacing: 0;
+  }
+
+  :root[data-mode='plain'] .poster__name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    margin-top: 1rem;
+  }
+
+  .poster__alias {
+    margin: 0.4rem 0 0;
+    font-family: var(--annotation);
+    font-size: clamp(0.9375rem, 2.6vw, 1.125rem);
+    color: var(--ink-soft);
+  }
+
+  /* --- Facts --- */
+  .poster__facts {
+    margin: clamp(1.25rem, 4vw, 2rem) 0 0;
+    border-top: 3px double var(--ink);
+    border-bottom: 3px double var(--ink);
+    padding: clamp(0.9rem, 2.5vw, 1.35rem) 0;
+    display: grid;
+    gap: 0.7rem;
+    text-align: left;
+  }
+
+  :root[data-mode='plain'] .poster__facts {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    border-radius: 0;
+    padding-bottom: 0;
+  }
+
+  .poster__fact {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: 0.35rem 1rem;
+    align-items: baseline;
+  }
+
+  .poster__fact dt {
+    font-family: var(--ui);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .poster__fact dd {
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .poster__amount {
+    display: block;
+    font-size: clamp(1.125rem, 3.6vw, 1.625rem);
+    color: var(--ink);
+  }
+
+  :root[data-mode='plain'] .poster__amount {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* The caveat under the figure. Sits in the UI face rather than the body serif
+     so it reads as a footnote to the number, not as part of it. */
+  .poster__amount-note {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--ui);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    max-width: 26rem;
+  }
+
+  /* --- Also known for --- */
+  .poster__also {
+    margin-top: clamp(0.9rem, 2.5vw, 1.4rem);
+    text-align: left;
+  }
+
+  .poster__also-label {
+    margin: 0 0 0.55rem;
+    text-align: center;
+  }
+
+  /* Two columns of small print. Twelve single-line entries stacked would add
+     ~250px of poster; in two columns it costs six rows. */
+  .poster__also-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    columns: 2;
+    column-gap: clamp(0.9rem, 2.5vw, 1.6rem);
+    font-family: var(--ui);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.95;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .poster__also-list li {
+    /* Hanging indent, so an entry that wraps aligns under its own text rather
+       than back under the bullet. */
+    padding-left: 0.8rem;
+    text-indent: -0.8rem;
+    break-inside: avoid;
+  }
+
+  .poster__also-list li::before {
+    content: '•';
+    color: var(--red);
+    margin-right: 0.4rem;
+  }
+
+  @media (max-width: 30rem) {
+    .poster__also-list {
+      columns: 1;
+      line-height: 1.85;
+    }
+  }
+
+  :root[data-mode='plain'] .poster__also-label {
+    text-align: left;
+  }
+
+  :root[data-mode='plain'] .poster__also-list {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  :root[data-mode='plain'] .poster__also-list li::before {
+    color: var(--ink-faint);
+  }
+
+  /* --- Stamp --- */
+  .poster__stamp {
+    position: absolute;
+    right: clamp(1rem, 3vw, 2.25rem);
+    /* Tuned so the rotated bounding box lands on the inner frame rule — reads as
+       pressed onto the document rather than sliding off the paper. Rotation
+       pushes the corner ~19px lower than the layout box, so this is not the
+       visual offset it looks like. */
+    bottom: clamp(1.25rem, 3vw, 2rem);
+    margin: 0;
+    font-size: clamp(1.375rem, 4.5vw, 2.25rem);
+    rotate: -11deg;
+    border-width: 5px;
+    padding: 0.25em 0.6em 0.2em;
+    background: rgba(247, 238, 217, 0.35);
+  }
+
+  .poster__stamp-plain {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    margin: 0;
+  }
+
+  .poster__scroll {
+    margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+    text-align: center;
+    font-family: var(--ui);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    animation: nudge 2.4s ease-in-out infinite;
+  }
+
+  @keyframes nudge {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 5px;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .poster__fact {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+</style>

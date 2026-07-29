@@ -1,0 +1,95 @@
+---
+import { letter, suspect } from '../data/dossier';
+---
+
+<section class="letter" id="letter">
+  <div class="wrap wrap--tight">
+    <div class="letter__sheet">
+      <p class="letter__salutation">{letter.salutation}</p>
+
+      <h2 class="letter__q display letterpress">{letter.question}</h2>
+
+      {letter.body.map((p) => <p class="lede letter__p">{p}</p>)}
+
+      <hr class="hairline letter__hr" />
+
+      <p class="letter__note">{letter.signoff}</p>
+
+      <p class="letter__meta">
+        Responding to <a
+          class="link"
+          href={suspect.jobUrl}
+          target="_blank"
+          rel="noreferrer">the notice as posted</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .letter {
+    padding: clamp(2rem, 6vw, 4rem) 0;
+  }
+
+  .letter__sheet {
+    position: relative;
+    background: var(--paper-lit);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    box-shadow: 5px 5px 0 rgba(36, 28, 20, 0.14);
+  }
+
+  :root[data-mode='plain'] .letter__sheet {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .letter__salutation {
+    margin: 0 0 0.75rem;
+    font-family: var(--annotation);
+    font-size: 1.0625rem;
+  }
+
+  .letter__q {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.5rem, 5.2vw, 2.5rem);
+    color: var(--red);
+    line-height: 1;
+  }
+
+  :root[data-mode='plain'] .letter__q {
+    font-size: clamp(1.375rem, 4vw, 1.875rem);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .letter__p {
+    margin: 0 0 0.85rem;
+  }
+
+  .letter__p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .letter__hr {
+    margin-block: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .letter__note {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink-soft);
+  }
+
+  .letter__meta {
+    margin: 1rem 0 0;
+    font-family: var(--ui);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+</style>

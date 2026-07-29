@@ -1,0 +1,392 @@
+/* ==========================================================================
+   WANTED: Developer Marketer
+   Two skins, one document:
+     [data-mode="poster"] — the thing you actually came for
+     [data-mode="plain"]  — for whoever has to read 40 of these today
+   ========================================================================== */
+
+:root {
+  --paper: #efe2c6;
+  --paper-lit: #f7eed9;
+  --paper-deep: #e2d2b0;
+  --ink: #241c14;
+  --ink-soft: #5c4a37;
+  --ink-faint: #8b7658;
+  --rule: #241c14;
+
+  --red: #f54e00;
+  --yellow: #f7a501;
+  --blue: #1d4aff;
+  --stamp: #b3210b;
+
+  /* Display faces carry the period. Body text has to be legible at 16px, so it
+     gets a proper text serif; the typewriter is demoted to short annotations. */
+  --display: 'Rye', 'Bevan', Georgia, serif;
+  --slab: 'Bevan', Georgia, serif;
+  --type: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  --annotation: 'Special Elite', 'Courier New', monospace;
+  /* Deliberately unhosted: only used for small labels and plain mode, where a
+     native UI face costs nothing and saves a whole webfont download. */
+  --ui: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --frame: 2px;
+  --measure: 68ch;
+  --grain: 0.5;
+
+  color-scheme: light;
+}
+
+/* --- The boring skin ---------------------------------------------------- */
+:root[data-mode='plain'] {
+  --paper: #ffffff;
+  --paper-lit: #ffffff;
+  --paper-deep: #f4f4f5;
+  --ink: #18181b;
+  --ink-soft: #3f3f46;
+  --ink-faint: #71717a;
+  --rule: #d4d4d8;
+  --stamp: #15803d;
+
+  --display: var(--ui);
+  --slab: var(--ui);
+  --type: var(--ui);
+  --annotation: var(--ui);
+
+  --grain: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--type);
+  /* Libre Baskerville runs large for its nominal size and wants generous
+     leading, so the base is a shade smaller and the line-height taller. */
+  font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  line-height: 1.72;
+  overflow-x: hidden;
+}
+
+:root[data-mode='plain'] body {
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  line-height: 1.6;
+}
+
+/* Short typed annotations — aliases, captions, marginalia. Never paragraphs. */
+.annotation {
+  font-family: var(--annotation);
+}
+
+/* Paper grain + vignette. Both fade to nothing in plain mode. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  opacity: var(--grain);
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 40%,
+    transparent 40%,
+    rgba(90, 62, 26, 0.18) 100%
+  );
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+/* --- Layout ------------------------------------------------------------- */
+.wrap {
+  width: min(100% - 2.5rem, 62rem);
+  margin-inline: auto;
+}
+
+.wrap--tight {
+  width: min(100% - 2.5rem, 46rem);
+}
+
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Type --------------------------------------------------------------- */
+.display {
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.slab {
+  font-family: var(--slab);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+}
+
+/* Letterpress: ink pressed into fibre. Disabled in plain mode. */
+:root[data-mode='poster'] .letterpress {
+  text-shadow:
+    0 1px 0 rgba(255, 250, 235, 0.5),
+    0 -1px 1px rgba(36, 28, 20, 0.25);
+}
+
+.overline {
+  font-family: var(--ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.lede {
+  font-size: clamp(1.15rem, 1rem + 0.7vw, 1.4rem);
+  line-height: 1.5;
+}
+
+/* --- Ornamental rules --------------------------------------------------- */
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ink);
+}
+
+.rule::before,
+.rule::after {
+  content: '';
+  flex: 1;
+  height: 0;
+  border-top: 1px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  opacity: 0.85;
+}
+
+:root[data-mode='plain'] .rule::before,
+:root[data-mode='plain'] .rule::after {
+  border-bottom-width: 0;
+  border-top-color: var(--rule);
+}
+
+.rule__mark {
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+}
+
+.hairline {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  opacity: 0.45;
+  margin: 0;
+}
+
+/* --- Stamps ------------------------------------------------------------- */
+.stamp {
+  display: inline-block;
+  font-family: var(--slab);
+  text-transform: uppercase;
+  color: var(--stamp);
+  border: 3px double currentColor;
+  padding: 0.3em 0.7em 0.25em;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  rotate: -4deg;
+  mix-blend-mode: multiply;
+  opacity: 0.88;
+}
+
+:root[data-mode='plain'] .stamp {
+  rotate: none;
+  border: 1px solid var(--stamp);
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  mix-blend-mode: normal;
+  opacity: 1;
+  padding: 0.25em 0.55em;
+}
+
+/* --- Buttons / links ---------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.7rem 1.1rem;
+  color: var(--ink);
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    translate 100ms ease,
+    box-shadow 100ms ease;
+}
+
+.btn:hover {
+  translate: -1px -1px;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.btn:active {
+  translate: 2px 2px;
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.btn--red {
+  background: var(--red);
+  color: #fff;
+}
+
+:root[data-mode='plain'] .btn {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  border-radius: 6px;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:root[data-mode='plain'] .btn:hover {
+  translate: none;
+  box-shadow: none;
+  filter: brightness(1.1);
+}
+
+/* Inline links read like a case reference in poster mode. */
+.link {
+  color: var(--ink);
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--red);
+  transition: background-color 120ms ease;
+}
+
+.link:hover {
+  background-color: var(--yellow);
+  text-decoration-color: var(--ink);
+}
+
+:root[data-mode='plain'] .link {
+  color: var(--blue);
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+}
+
+:root[data-mode='plain'] .link:hover {
+  background: transparent;
+  text-decoration-thickness: 2px;
+}
+
+/* --- Utility ------------------------------------------------------------ */
+.only-poster {
+  display: revert;
+}
+
+.only-plain {
+  display: none;
+}
+
+:root[data-mode='plain'] .only-poster {
+  display: none !important;
+}
+
+:root[data-mode='plain'] .only-plain {
+  display: revert;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Print: give them something to hand to their boss ------------------- */
+@media print {
+  :root {
+    --grain: 0;
+  }
+
+  body,
+  .poster,
+  .letter__sheet,
+  .charge,
+  .close__card {
+    background: #fff;
+    box-shadow: none;
+  }
+
+  body::before,
+  body::after {
+    display: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

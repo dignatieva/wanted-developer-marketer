@@ -1,0 +1,162 @@
+---
+import { closing, suspect } from '../data/dossier';
+---
+
+<section class="close" id="claim">
+  <div class="wrap wrap--tight">
+    <div class="close__card">
+      <p class="overline">Claim the reward</p>
+      <h2 class="close__title display letterpress">{closing.heading}</h2>
+
+      {closing.body.map((p) => <p class="close__p lede">{p}</p>)}
+
+      <div class="close__actions">
+        <a class="btn btn--red" href={`mailto:${suspect.email}?subject=Re: Notice %23${suspect.noticeId}`}>
+          Bring her in
+        </a>
+        <button type="button" class="btn no-print" data-print>Print the poster</button>
+      </div>
+
+      <dl class="close__links">
+        {
+          suspect.links.map((l) => (
+            <div class="close__link">
+              <dt>{l.label}</dt>
+              <dd>
+                <a class="link" href={l.href} target="_blank" rel="noreferrer">
+                  {l.text}
+                </a>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <footer class="foot">
+      <p class="foot__ps">{closing.ps}</p>
+      <p class="foot__built">
+        Built with Astro. Hand-written, no page builder, no template — same reason 339 pages
+        left Webflow. Fonts are self-hosted. The whole page is one HTML document.
+      </p>
+      <p class="foot__disclaimer">
+        Unaffiliated with PostHog and not an official PostHog page — no PostHog artwork or
+        logos were used. Just an application, wearing a costume.
+      </p>
+    </footer>
+  </div>
+</section>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => {
+    window.posthog?.capture('poster_printed');
+    window.print();
+  });
+</script>
+
+<style>
+  .close {
+    padding: clamp(2.5rem, 7vw, 4.5rem) 0 clamp(2rem, 5vw, 3rem);
+  }
+
+  .close__card {
+    position: relative;
+    background: var(--paper-lit);
+    border: 4px double var(--ink);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    box-shadow: 6px 6px 0 rgba(36, 28, 20, 0.14);
+  }
+
+  :root[data-mode='plain'] .close__card {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .close__title {
+    margin: 0.5rem 0 1.1rem;
+    font-size: clamp(1.625rem, 5.5vw, 2.75rem);
+    line-height: 1;
+  }
+
+  :root[data-mode='plain'] .close__title {
+    font-size: clamp(1.375rem, 4vw, 1.875rem);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .close__p {
+    margin: 0 0 0.85rem;
+  }
+
+  .close__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .close__links {
+    margin: clamp(1.5rem, 4vw, 2rem) 0 0;
+    padding-top: clamp(1.1rem, 3vw, 1.5rem);
+    border-top: 3px double var(--ink);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  :root[data-mode='plain'] .close__links {
+    border-top: 1px solid var(--rule);
+  }
+
+  .close__link {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 0.15rem 1rem;
+    align-items: baseline;
+  }
+
+  .close__link dt {
+    font-family: var(--ui);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .close__link dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* --- Footer --- */
+  .foot {
+    margin-top: clamp(1.75rem, 5vw, 2.5rem);
+    text-align: center;
+  }
+
+  .foot__ps {
+    margin: 0 0 0.9rem;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  .foot__built,
+  .foot__disclaimer {
+    margin: 0 auto 0.6rem;
+    max-width: 34rem;
+    font-family: var(--ui);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 30rem) {
+    .close__link {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

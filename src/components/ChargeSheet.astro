@@ -1,0 +1,291 @@
+---
+import { charges, companyLinks } from '../data/dossier';
+import { linkify } from '../lib/linkify';
+import Reels from './Reels.astro';
+import Polaroids from './Polaroids.astro';
+import Partners from './Partners.astro';
+import Blueprint from './Blueprint.astro';
+
+// Resolved here rather than in the template: a `new Set<string>()` inside an
+// Astro expression gets parsed as a JSX tag and fails the build.
+const prepared = charges.map((charge) => {
+  // One set per charge, so each company links on its first mention only.
+  const linked = new Set<string>();
+
+  return {
+    charge,
+    paragraphs: charge.testimony.map((t) => linkify(t, companyLinks, linked)),
+  };
+});
+---
+
+<section class="charges" id="charges">
+  <div class="wrap">
+    <header class="charges__head">
+      <div class="rule" aria-hidden="true"><span class="rule__mark">✦</span></div>
+      <h2 class="charges__title display letterpress">Wanted for the following</h2>
+      <p class="charges__sub">
+        Six counts, quoted from the posting. Pleas entered below, with evidence attached.
+      </p>
+    </header>
+
+    <ol class="charges__list">
+      {
+        prepared.map(({ charge: c, paragraphs }) => (
+          <li class="charge">
+            <div class="charge__top">
+              <p class="charge__n display">{c.n}</p>
+              <div class="charge__headings">
+                <p class="charge__label overline">
+                  {c.source === 'required' ? 'Count' : 'Count · nice to have'}
+                </p>
+                <h3 class="charge__title slab letterpress">{c.charge}</h3>
+              </div>
+              <p class="charge__plea stamp">{c.plea}</p>
+            </div>
+
+            <div class="charge__body">
+              {paragraphs.map((segments) => (
+                <p class="charge__p">
+                  {segments.map((s) =>
+                    s.href ? (
+                      <a class="link" href={s.href} target="_blank" rel="noreferrer">
+                        {s.text}
+                      </a>
+                    ) : (
+                      s.text
+                    )
+                  )}
+                </p>
+              ))}
+            </div>
+
+            {((c.exhibits && c.exhibits.length > 0) ||
+              (c.videos && c.videos.length > 0) ||
+              (c.photos && c.photos.length > 0) ||
+              (c.partners && c.partners.length > 0) ||
+              c.blueprint) && (
+              <div class="charge__evidence">
+                {c.exhibits && c.exhibits.length > 0 && (
+                  <>
+                    <p class="charge__evidence-label overline">Evidence submitted</p>
+                    <ul class="exhibits">
+                      {c.exhibits.map((e) => (
+                        <li class="exhibit">
+                          <a class="link exhibit__link" href={e.href} target="_blank" rel="noreferrer">
+                            {e.label}
+                          </a>
+                          {e.note && <span class="exhibit__note">{e.note}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {c.blueprint && <Blueprint blueprint={c.blueprint} />}
+                {c.partners && c.partners.length > 0 && <Partners partners={c.partners} />}
+                {c.videos && c.videos.length > 0 && <Reels videos={c.videos} />}
+                {c.photos && c.photos.length > 0 && <Polaroids photos={c.photos} />}
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .charges {
+    padding: clamp(1rem, 3vw, 2rem) 0 clamp(2.5rem, 7vw, 4.5rem);
+  }
+
+  .charges__head {
+    text-align: center;
+    margin-bottom: clamp(1.75rem, 5vw, 3rem);
+  }
+
+  .charges__title {
+    margin: clamp(0.75rem, 2vw, 1.25rem) 0 0.6rem;
+    font-size: clamp(1.75rem, 6.5vw, 3.5rem);
+  }
+
+  :root[data-mode='plain'] .charges__head {
+    text-align: left;
+  }
+
+  :root[data-mode='plain'] .charges__title {
+    font-size: clamp(1.375rem, 4vw, 1.875rem);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.02em;
+  }
+
+  .charges__sub {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+
+  .charges__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  /* --- One charge --- */
+  .charge {
+    background: var(--paper-lit);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    padding: clamp(1.15rem, 3.5vw, 2rem);
+    box-shadow: 4px 4px 0 rgba(36, 28, 20, 0.13);
+  }
+
+  :root[data-mode='plain'] .charge {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .charge__top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem 1.1rem;
+    align-items: start;
+    padding-bottom: clamp(0.85rem, 2vw, 1.15rem);
+    border-bottom: 3px double var(--ink);
+  }
+
+  :root[data-mode='plain'] .charge__top {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .charge__n {
+    margin: 0;
+    font-size: clamp(2.25rem, 7vw, 3.5rem);
+    color: var(--red);
+    line-height: 0.8;
+  }
+
+  :root[data-mode='plain'] .charge__n {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink-faint);
+    line-height: 1.4;
+  }
+
+  .charge__headings {
+    min-width: 0;
+  }
+
+  .charge__label {
+    margin: 0 0 0.3rem;
+  }
+
+  .charge__title {
+    margin: 0;
+    font-size: clamp(1.0625rem, 3vw, 1.5rem);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  :root[data-mode='plain'] .charge__title {
+    font-size: 1.125rem;
+    font-weight: 650;
+    text-transform: none;
+    letter-spacing: -0.01em;
+  }
+
+  .charge__plea {
+    margin: 0;
+    font-size: clamp(0.6875rem, 1.9vw, 0.9375rem);
+    /* Wraps rather than running on: "Partially guilty" on one line is 221px of
+       header, which pushed a long charge title onto a third row. A stamp over two
+       lines is fine — real ones do it. */
+    max-width: 8rem;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .charge__body {
+    padding-top: clamp(0.9rem, 2.5vw, 1.25rem);
+  }
+
+  .charge__p {
+    margin: 0 0 0.8rem;
+    max-width: var(--measure);
+  }
+
+  .charge__p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* --- Evidence --- */
+  .charge__evidence {
+    margin-top: clamp(1.1rem, 3vw, 1.5rem);
+    background: var(--paper-deep);
+    border-left: 4px solid var(--yellow);
+    padding: clamp(0.85rem, 2.5vw, 1.15rem) clamp(1rem, 3vw, 1.35rem);
+  }
+
+  :root[data-mode='plain'] .charge__evidence {
+    background: var(--paper-deep);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .charge__evidence-label {
+    margin: 0 0 0.6rem;
+    color: var(--ink-soft);
+  }
+
+  .exhibits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .exhibit {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .exhibit__link {
+    font-family: var(--ui);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  .exhibit__link::before {
+    content: '→ ';
+    color: var(--red);
+  }
+
+  :root[data-mode='plain'] .exhibit__link::before {
+    content: none;
+  }
+
+  .exhibit__note {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 38rem) {
+    .charge__top {
+      grid-template-columns: auto 1fr;
+    }
+
+    .charge__plea {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

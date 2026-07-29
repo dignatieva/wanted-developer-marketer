@@ -1,0 +1,73 @@
+---
+// Latin subsets only. The defaults ship Cyrillic, Vietnamese and legacy .woff
+// too, which quadruples the font payload for glyphs this page never renders.
+import '@fontsource/rye/latin-400.css';
+import '@fontsource/bevan/latin-400.css';
+import '@fontsource/special-elite/latin-400.css';
+// No 700 weight: nothing in the body copy is bold — headings all use Rye or
+// Bevan. Add it back if you ever put a <strong> inside a paragraph.
+import '@fontsource/libre-baskerville/latin-400.css';
+import '@fontsource/libre-baskerville/latin-400-italic.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-mode="poster">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Daryna Rodriguez" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="canonical" href={Astro.site} />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23efe2c6'/%3E%3Ctext x='16' y='24' font-size='22' font-family='Georgia,serif' text-anchor='middle' fill='%23b3210b'%3EW%3C/text%3E%3C/svg%3E"
+    />
+
+    {/* Restore the reader's chosen skin before first paint, so it never flashes. */}
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('wanted-mode');
+        if (saved === 'plain' || saved === 'poster') {
+          document.documentElement.dataset.mode = saved;
+        }
+      } catch (e) {
+        /* private browsing, no preference to restore */
+      }
+    </script>
+
+    {/*
+      Optional self-instrumentation. Add PUBLIC_POSTHOG_KEY to .env and the page
+      starts reporting on itself; leave it unset and this chunk never loads.
+    */}
+    <script>
+      const key = import.meta.env.PUBLIC_POSTHOG_KEY;
+
+      if (key) {
+        const { default: posthog } = await import('posthog-js');
+
+        posthog.init(key, {
+          api_host: import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
+          defaults: '2025-05-24',
+        });
+
+        window.posthog = posthog;
+      }
+    </script>
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>

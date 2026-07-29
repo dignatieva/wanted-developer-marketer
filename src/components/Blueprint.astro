@@ -1,0 +1,269 @@
+---
+import type { Blueprint } from '../data/dossier';
+
+interface Props {
+  blueprint: Blueprint;
+}
+
+const { blueprint } = Astro.props;
+---
+
+<figure class="bp">
+  <p class="bp__label overline">{blueprint.label}</p>
+
+  {/*
+    The chain is plain flow content, not an SVG with fixed coordinates: it wraps
+    into a column on a phone instead of scaling down to unreadable. The connector
+    glyph is supplied by CSS so it can flip from → to ↓ at the same breakpoint.
+  */}
+  <ol class="bp__chain">
+    {
+      blueprint.chain.map((node) => (
+        <li class="bp__node" class:list={[{ 'bp__node--retired': node.retired }]}>
+          <span class="bp__box">
+            <span class="bp__name slab">{node.name}</span>
+            <span class="bp__role">{node.role}</span>
+          </span>
+          {node.connector && (
+            <span class="bp__link" data-connector={node.connector} aria-hidden="true" />
+          )}
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="bp__built">
+    <p class="bp__built-line">
+      Built with <strong>{blueprint.builtWith.name}</strong>, with skills embedded in the repo for
+    </p>
+    <ul class="bp__skills">
+      {blueprint.builtWith.skills.map((s) => <li class="bp__skill">{s}</li>)}
+    </ul>
+  </div>
+
+  <dl class="bp__stats">
+    {
+      blueprint.stats.map((s) => (
+        <div class="bp__stat">
+          <dt class="bp__stat-value display">{s.value}</dt>
+          <dd class="bp__stat-label">{s.label}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <figcaption class="bp__foot">
+    {blueprint.footnote}{' '}
+    <a class="link" href={blueprint.profileHref} target="_blank" rel="noreferrer">
+      github.com/dignatieva
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .bp {
+    margin: clamp(1.1rem, 3vw, 1.5rem) 0 0;
+  }
+
+  .bp__label {
+    margin: 0 0 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  /* --- The chain --- */
+  .bp__chain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.5rem 0;
+  }
+
+  .bp__node {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* Lets a long chain wrap mid-row rather than overflowing. */
+    min-width: 0;
+  }
+
+  .bp__box {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.6rem 0.8rem;
+    background: var(--paper-lit);
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 rgba(36, 28, 20, 0.18);
+    text-align: center;
+  }
+
+  .bp__name {
+    font-size: 0.875rem;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .bp__role {
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  /* The thing being migrated away from reads as struck off the record. */
+  .bp__node--retired .bp__box {
+    background: transparent;
+    border-style: dashed;
+    box-shadow: none;
+  }
+
+  .bp__node--retired .bp__name {
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    color: var(--ink-faint);
+  }
+
+  .bp__link::before {
+    content: attr(data-connector);
+    font-family: var(--slab);
+    font-size: 1.125rem;
+    color: var(--red);
+    padding-inline: 0.15rem;
+  }
+
+  /* --- Built with --- */
+  .bp__built {
+    margin-top: clamp(1rem, 2.5vw, 1.35rem);
+    padding: clamp(0.8rem, 2vw, 1rem) clamp(0.9rem, 2.5vw, 1.15rem);
+    background: var(--ink);
+    color: var(--paper-lit);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+  }
+
+  :root[data-mode='plain'] .bp__built {
+    background: var(--paper-deep);
+    color: var(--ink);
+    border-radius: 8px;
+  }
+
+  .bp__built-line {
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+
+  .bp__built-line strong {
+    color: var(--yellow);
+  }
+
+  :root[data-mode='plain'] .bp__built-line strong {
+    color: inherit;
+  }
+
+  .bp__skills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .bp__skill {
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.28rem 0.5rem;
+    border: 1px solid rgba(247, 238, 217, 0.55);
+    color: var(--paper-lit);
+  }
+
+  :root[data-mode='plain'] .bp__skill {
+    border-color: var(--rule);
+    color: var(--ink-soft);
+    border-radius: 4px;
+  }
+
+  /* --- Stats --- */
+  .bp__stats {
+    margin: clamp(1rem, 2.5vw, 1.35rem) 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: clamp(0.7rem, 2vw, 1.1rem);
+  }
+
+  .bp__stat {
+    border-top: 3px double var(--ink);
+    padding-top: 0.5rem;
+  }
+
+  :root[data-mode='plain'] .bp__stat {
+    border-top: 1px solid var(--rule);
+  }
+
+  .bp__stat-value {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: var(--red);
+    line-height: 1;
+  }
+
+  :root[data-mode='plain'] .bp__stat-value {
+    font-family: var(--ui);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+
+  .bp__stat-label {
+    margin: 0.25rem 0 0;
+    font-family: var(--ui);
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+
+  .bp__foot {
+    margin: clamp(0.8rem, 2vw, 1rem) 0 0;
+    font-family: var(--ui);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    color: var(--ink-faint);
+  }
+
+  /* Stack the chain vertically once the row can no longer hold it side by side. */
+  @media (max-width: 46rem) {
+    .bp__chain {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .bp__node {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
+      width: 100%;
+    }
+
+    .bp__box {
+      text-align: left;
+      width: 100%;
+    }
+
+    .bp__link::before {
+      content: '↓';
+      display: block;
+      padding: 0.1rem 0 0.1rem 0.9rem;
+    }
+  }
+</style>

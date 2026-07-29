@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import type { Partner } from '../data/dossier';
+
+interface Props {
+  partners: Partner[];
+}
+
+const { partners } = Astro.props;
+---
+
+<div class="partners">
+  <p class="partners__label overline">Launched integrations</p>
+
+  <ul class="partners__grid">
+    {
+      partners.map((p) => (
+        <li class="plate">
+          {/*
+            Two sibling links, not one wrapping the other — anchors cannot nest.
+            The mark goes to the integration that was built; the small label goes
+            to the product it was built for.
+          */}
+          <a class="plate__mark" href={p.href} target="_blank" rel="noreferrer">
+            {
+              p.logo ? (
+                <Image class="plate__logo" src={p.logo} alt={p.name} widths={[120, 240]} loading="lazy" />
+              ) : (
+                <span class="plate__name slab">{p.name}</span>
+              )
+            }
+          </a>
+
+          {
+            p.productHref ? (
+              <a class="plate__product plate__product--link" href={p.productHref} target="_blank" rel="noreferrer">
+                {p.product}
+              </a>
+            ) : (
+              <span class="plate__product">{p.product}</span>
+            )
+          }
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .partners {
+    margin-top: clamp(1.1rem, 3vw, 1.5rem);
+  }
+
+  .partners__label {
+    margin: 0 0 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  .partners__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    /* 7rem, not 8.5rem: at 8.5rem a phone-width panel only fits one track and the
+       plates stack full-width, which stops reading as a row of marks. */
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    /* "Amazon Business" wraps to two lines and would otherwise make its row
+       taller than the rest. Equal rows keep every plate the same size. */
+    grid-auto-rows: 1fr;
+    gap: clamp(0.6rem, 1.8vw, 0.9rem);
+  }
+
+  /* A stamped brass plate, not a floating logo. Keeps the row looking deliberate
+     even while the marks are set in type rather than supplied as artwork. */
+  .plate {
+    display: grid;
+    place-content: center;
+    gap: 0.3rem;
+    min-height: 5rem;
+    height: 100%;
+    padding: 0.9rem 0.75rem;
+    text-align: center;
+    color: var(--ink);
+    background: var(--paper-lit);
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 rgba(36, 28, 20, 0.16);
+    transition: translate 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  }
+
+  /* The plate reacts as one object even though it holds two separate links. */
+  .plate:has(a:hover),
+  .plate:has(a:focus-visible) {
+    translate: -1px -1px;
+    box-shadow: 5px 5px 0 rgba(36, 28, 20, 0.16);
+    background: var(--yellow);
+  }
+
+  .plate__mark {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .plate a:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+  }
+
+  .plate__name {
+    font-size: clamp(0.9375rem, 2.4vw, 1.0625rem);
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .plate__logo {
+    width: auto;
+    max-width: 100%;
+    height: 1.75rem;
+    object-fit: contain;
+    margin-inline: auto;
+  }
+
+  .plate__product {
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .plate:has(a:hover) .plate__product {
+    color: var(--ink-soft);
+  }
+
+  .plate__product--link {
+    color: var(--stamp);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .plate__product--link:hover {
+    color: var(--ink);
+    text-decoration-thickness: 2px;
+  }
+
+  :root[data-mode='plain'] .plate {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: none;
+    min-height: 4.25rem;
+  }
+
+  :root[data-mode='plain'] .plate:has(a:hover),
+  :root[data-mode='plain'] .plate:has(a:focus-visible) {
+    translate: none;
+    box-shadow: none;
+    background: var(--paper-deep);
+  }
+
+  :root[data-mode='plain'] .plate__product--link {
+    color: var(--blue);
+  }
+
+  :root[data-mode='plain'] .plate__name {
+    font-family: var(--ui);
+    font-weight: 600;
+    text-transform: none;
+    font-size: 0.9375rem;
+    color: var(--blue);
+  }
+</style>

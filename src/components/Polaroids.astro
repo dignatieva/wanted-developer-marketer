@@ -1,0 +1,152 @@
+---
+import { Image } from 'astro:assets';
+import type { PhotoEvidence } from '../data/dossier';
+
+interface Props {
+  photos: PhotoEvidence[];
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="board">
+  <p class="board__label overline">Photographic evidence</p>
+
+  <div class="board__grid">
+    {
+      photos.map((p) => (
+        <figure class="polaroid" style={`--photo-tilt:${p.tilt}deg;--photo-focus:${p.focus ?? 'center'}`}>
+          <span class="polaroid__tape" aria-hidden="true" />
+          <Image
+            src={p.src}
+            alt={p.alt ?? p.caption}
+            widths={[280, 560]}
+            sizes="(max-width: 48rem) 85vw, 280px"
+            loading="lazy"
+          />
+          <figcaption class="polaroid__cap">
+            <span class="polaroid__stamp">{p.stamp}</span>
+            {p.caption}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .board {
+    margin-top: clamp(1.1rem, 3vw, 1.5rem);
+  }
+
+  .board__label {
+    margin: 0 0 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .board__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: clamp(1.4rem, 3.5vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
+  }
+
+  /* --- One pinned photo --- */
+  .polaroid {
+    position: relative;
+    margin: 0;
+    min-width: 0;
+    /* A charge with a single photo would otherwise get one full-width column and
+       render a square the size of the whole panel. Caps it at roughly the width
+       it takes when there are three. */
+    max-width: 19rem;
+    background: #fdfaf2;
+    padding: 0.7rem 0.7rem 0.5rem;
+    border: 1px solid rgba(36, 28, 20, 0.22);
+    box-shadow:
+      0 2px 4px rgba(36, 28, 20, 0.16),
+      0 14px 28px -18px rgba(36, 28, 20, 0.6);
+    rotate: var(--photo-tilt);
+    transition: rotate 180ms ease, translate 180ms ease;
+  }
+
+  .polaroid:hover {
+    rotate: 0deg;
+    translate: 0 -3px;
+    z-index: 2;
+  }
+
+  :root[data-mode='plain'] .polaroid {
+    rotate: none;
+    background: transparent;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  :root[data-mode='plain'] .polaroid:hover {
+    translate: none;
+  }
+
+  /* A strip of tape across the top corner. */
+  .polaroid__tape {
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    translate: -50% 0;
+    width: 4rem;
+    height: 1.2rem;
+    background: rgba(247, 165, 1, 0.42);
+    border-inline: 1px dashed rgba(36, 28, 20, 0.18);
+    rotate: -3deg;
+    box-shadow: 0 1px 2px rgba(36, 28, 20, 0.14);
+  }
+
+  :root[data-mode='plain'] .polaroid__tape {
+    display: none;
+  }
+
+  .polaroid :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: var(--photo-focus, center);
+    background: var(--paper-deep);
+    filter: sepia(0.16) contrast(1.04);
+  }
+
+  :root[data-mode='plain'] .polaroid :global(img) {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    filter: none;
+  }
+
+  .polaroid__cap {
+    margin-top: 0.6rem;
+    font-family: var(--annotation);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .polaroid__stamp {
+    display: block;
+    font-family: var(--ui);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--stamp);
+    margin-bottom: 0.2rem;
+  }
+
+  :root[data-mode='plain'] .polaroid__cap {
+    font-family: var(--ui);
+    font-size: 0.8125rem;
+  }
+
+  :root[data-mode='plain'] .polaroid__stamp {
+    color: var(--ink-faint);
+  }
+</style>

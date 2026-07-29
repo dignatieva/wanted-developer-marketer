@@ -1,0 +1,247 @@
+---
+import type { VideoEvidence } from '../data/dossier';
+
+interface Props {
+  videos: VideoEvidence[];
+}
+
+const { videos } = Astro.props;
+---
+
+<div class="reels">
+  <p class="reels__label overline">Motion picture evidence</p>
+
+  <div class="reels__grid">
+    {
+      videos.map((v) => (
+        <figure class="reel">
+          {/*
+            A facade, not an iframe. An embedded YouTube player costs about a
+            megabyte of JavaScript before anyone presses anything, and this page
+            claims on the poster to care about Web Vitals. Nothing but a
+            thumbnail loads until the reader actually asks for the video.
+          */}
+          <button class="reel__player" type="button" data-video={v.id} aria-label={`Play: ${v.title}`}>
+            <img
+              src={`https://i.ytimg.com/vi/${v.id}/maxresdefault.jpg`}
+              alt=""
+              width="1280"
+              height="720"
+              loading="lazy"
+              decoding="async"
+              data-thumb
+            />
+            <span class="reel__play" aria-hidden="true">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <circle cx="50" cy="50" r="48" />
+                <path d="M38 28l34 22-34 22z" />
+              </svg>
+            </span>
+            <span class="reel__badge" aria-hidden="true">{v.stamp}</span>
+          </button>
+
+          <figcaption class="reel__cap">
+            <a
+              class="link reel__link"
+              href={`https://www.youtube.com/watch?v=${v.id}`}
+              target="_blank"
+              rel="noreferrer">{v.title}</a>
+            <span class="reel__note">{v.note}</span>
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  // maxresdefault does not exist for every upload; hqdefault always does. It is
+  // 4:3 with letterbox bars, which the 16/9 object-fit crop removes exactly.
+  document.querySelectorAll<HTMLImageElement>('[data-thumb]').forEach((img) => {
+    img.addEventListener('error', () => {
+      if (img.dataset.fallback) return;
+      img.dataset.fallback = '';
+      img.src = img.src.replace('maxresdefault', 'hqdefault');
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-video]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.video;
+      if (!id) return;
+
+      const frame = document.createElement('iframe');
+      // nocookie host, and no request to it at all until this moment.
+      frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      frame.title = btn.getAttribute('aria-label')?.replace(/^Play: /, '') ?? 'Video';
+      frame.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      frame.allowFullscreen = true;
+      frame.className = 'reel__iframe';
+      frame.loading = 'lazy';
+
+      btn.replaceWith(frame);
+      window.posthog?.capture('reel_played', { video: id });
+    });
+  });
+</script>
+
+<style>
+  .reels {
+    margin-top: clamp(1.1rem, 3vw, 1.5rem);
+  }
+
+  .reels__label {
+    margin: 0 0 0.7rem;
+    color: var(--ink-soft);
+  }
+
+  .reels__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: clamp(1.1rem, 3vw, 1.75rem);
+  }
+
+  .reel {
+    margin: 0;
+    min-width: 0;
+  }
+
+  /* --- The facade --- */
+  .reel__player {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 3px 3px 0 rgba(36, 28, 20, 0.18);
+    transition: translate 120ms ease, box-shadow 120ms ease;
+  }
+
+  .reel__player:hover {
+    translate: -1px -1px;
+    box-shadow: 5px 5px 0 rgba(36, 28, 20, 0.18);
+  }
+
+  .reel__player:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+  }
+
+  .reel__player img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    filter: sepia(0.22) contrast(1.05) saturate(0.85);
+    transition: filter 220ms ease, scale 320ms ease;
+  }
+
+  .reel__player:hover img {
+    filter: sepia(0.06) contrast(1.02) saturate(1);
+    scale: 1.02;
+  }
+
+  .reel__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+
+  .reel__play svg {
+    width: clamp(2.75rem, 19%, 3.75rem);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+    transition: scale 160ms ease;
+  }
+
+  .reel__play circle {
+    fill: var(--red);
+  }
+
+  .reel__play path {
+    fill: var(--paper-lit);
+  }
+
+  .reel__player:hover .reel__play svg {
+    scale: 1.09;
+  }
+
+  .reel__badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-family: var(--ui);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--paper-lit);
+    background: rgba(36, 28, 20, 0.78);
+    border: 1px solid rgba(247, 238, 217, 0.5);
+    padding: 0.18rem 0.4rem;
+  }
+
+  /* --- Swapped-in player --- */
+  .reel :global(.reel__iframe) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+  }
+
+  /* --- Caption --- */
+  .reel__cap {
+    margin-top: 0.65rem;
+  }
+
+  .reel__link {
+    font-family: var(--ui);
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .reel__note {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  :root[data-mode='plain'] .reel__player {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  :root[data-mode='plain'] .reel__player:hover {
+    translate: none;
+    box-shadow: none;
+  }
+
+  :root[data-mode='plain'] .reel__player img {
+    filter: none;
+  }
+
+  :root[data-mode='plain'] .reel__badge {
+    display: none;
+  }
+
+  :root[data-mode='plain'] .reel__note {
+    font-style: normal;
+  }
+
+  :root[data-mode='plain'] .reel :global(.reel__iframe) {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+</style>

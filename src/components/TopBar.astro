@@ -1,0 +1,134 @@
+---
+import { suspect } from '../data/dossier';
+---
+
+<div class="bar no-print">
+  <div class="bar__inner">
+    <p class="bar__id">
+      <span class="bar__flag" aria-hidden="true">✦</span>
+      Reply to notice <strong>#{suspect.noticeId}</strong>
+      <span class="bar__sep" aria-hidden="true">·</span>
+      <span class="bar__from">filed by {suspect.name}</span>
+    </p>
+
+    <button type="button" class="bar__toggle" data-mode-toggle aria-live="polite">
+      <span class="only-poster">Boring recruiter mode</span>
+      <span class="only-plain">Wanted poster mode</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-mode-toggle]');
+
+  toggle?.addEventListener('click', () => {
+    const next = root.dataset.mode === 'plain' ? 'poster' : 'plain';
+    root.dataset.mode = next;
+
+    try {
+      localStorage.setItem('wanted-mode', next);
+    } catch (e) {
+      /* no preference to persist, no problem */
+    }
+
+    // If a PostHog key is configured, this is genuinely the most interesting
+    // event on the page: did they want the fun one or the readable one?
+    window.posthog?.capture('mode_toggled', { mode: next });
+  });
+</script>
+
+<style>
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--ink);
+    color: var(--paper-lit);
+    border-bottom: 2px solid var(--ink);
+  }
+
+  :root[data-mode='plain'] .bar {
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .bar__inner {
+    width: min(100% - 2rem, 62rem);
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.75rem;
+    padding-block: 0.4rem;
+  }
+
+  .bar__id {
+    margin: 0;
+    font-family: var(--ui);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .bar__id strong {
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  :root[data-mode='plain'] .bar__id strong {
+    color: inherit;
+  }
+
+  .bar__flag {
+    color: var(--red);
+    margin-right: 0.35rem;
+  }
+
+  .bar__sep {
+    opacity: 0.5;
+    margin-inline: 0.35rem;
+  }
+
+  .bar__toggle {
+    font-family: var(--ui);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 2px solid var(--paper-lit);
+    border-radius: 3px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+  }
+
+  .bar__toggle:hover {
+    background: var(--paper-lit);
+  }
+
+  :root[data-mode='plain'] .bar__toggle {
+    background: transparent;
+    color: var(--blue);
+    border-color: var(--rule);
+    letter-spacing: 0.02em;
+    text-transform: none;
+    font-size: 0.75rem;
+  }
+
+  :root[data-mode='plain'] .bar__toggle:hover {
+    background: var(--paper-deep);
+  }
+
+  @media (max-width: 34rem) {
+    .bar__from,
+    .bar__sep {
+      display: none;
+    }
+  }
+</style>

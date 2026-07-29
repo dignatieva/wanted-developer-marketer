@@ -41,8 +41,6 @@ export const suspect = {
     after: '.',
   },
   noticeId: 'DM-2026',
-  // Personal address, not the work one — applying from a current employer's
-  // mailbox is a bad idea, and this is the one to reach her on.
   email: 'darynarodriguezaguilar@gmail.com',
   jobUrl: 'https://posthog.com/careers/developer-marketer',
   links: [
@@ -51,14 +49,8 @@ export const suspect = {
       href: 'mailto:darynarodriguezaguilar@gmail.com',
       text: 'darynarodriguezaguilar@gmail.com',
     },
-    // ⚠ LinkedIn: your message repeated the email address here instead of a
-    // profile URL, so there is nothing to link yet. Paste the URL over the href
-    // and text below, then uncomment. Left out rather than shipped broken.
-    // {
-    //   label: 'LinkedIn',
-    //   href: 'https://www.linkedin.com/in/…',
-    //   text: 'linkedin.com/in/…',
-    // },
+    // LinkedIn goes here once the profile URL is in:
+    // { label: 'LinkedIn', href: 'https://www.linkedin.com/in/…', text: 'linkedin.com/in/…' },
   ],
 } as const;
 
@@ -89,8 +81,7 @@ export type VideoEvidence = {
  * Company names that get linked automatically the first time they appear in a
  * charge's testimony. Add a term here and every charge picks it up.
  *
- * LeadScanner is deliberately absent — I don't have a live URL for it. Add one
- * and it starts linking too.
+ * LeadScanr is absent because it has no live site to point at.
  */
 export const companyLinks: Record<string, string> = {
   Precoro: 'https://precoro.com/',
@@ -285,8 +276,6 @@ export const charges: Charge[] = [
     plea: 'Guilty',
     testimony: [
       'I’ve planned, coordinated, and launched products, from major features to integration partnerships with Amazon, NetSuite, QuickBooks, Slack, and others. That meant owning whatever the launch needed: positioning, messaging, sales enablement, customer communications, email campaigns, paid ads, landing pages, product videos, webinars, and making sure it all came together into one coherent GTM motion.',
-      // Unified to "LeadScanr", the spelling used in charge 04. Change both if
-      // the product's real name is styled differently.
       'At YouScan and LeadScanr, I worked closely with Product, writing PRDs, roadmaps, documentation, onboarding materials, email sequences, in-app tooltips, Intercom flows, and Help Center content to translate product requirements into user experiences.',
       'At Precoro, I partnered with Product and Sales on positioning, battlecards, sales decks, product messaging, and end-to-end integration launches. I also designed trial onboarding, lifecycle email sequences, feature announcements, and adoption campaigns.',
       'At Mercanis, my focus shifted toward growth marketing: translating product capabilities into customer pain points and outcomes through messaging frameworks, case studies, landing pages, and campaign assets.',
@@ -333,7 +322,6 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Guilty',
     testimony: [
-      // "This month" will date. Worth a glance if this page is still up in 2027.
       'This month, I moved an entire website, 339 pages, from Webflow to Astro. Research, planning, implementation, migration. The goal was simple: give the team the ability to ship pages without waiting for me or fighting Webflow every time (we don’t have a single developer in Marketing).',
       'Long before AI made building websites feel like cheating, I built a handful of WordPress sites for small businesses to earn some extra money and learn something new. During an internship at ePages, I even built a WordPress plugin. As far as I know, it’s still quietly doing its job somewhere on the internet.',
       'I studied Information Engineering and spent plenty of time writing C for microcontrollers. I definitely couldn’t do that today without a lot of Googling, but it changed how I think about systems and gave me a solid understanding of algorithms, software architecture, and databases.',
@@ -390,7 +378,6 @@ export const charges: Charge[] = [
     photos: [
       {
         src: diplomaImg,
-        // "fun an improbable" in your draft read as a typo for "and" — corrected.
         caption:
           'Lviv Data Science Summer School, 2017. Chose Natural Language Processing because computers understanding people sounded fun and improbable. Nine years later, here we are.',
         alt: 'A certificate from the Ukrainian Catholic University for completing the Lviv Data Science Summer School, lying on a desk beside a mug and a notebook printed with DREAM ON',
@@ -403,7 +390,6 @@ export const charges: Charge[] = [
     n: '05',
     charge: 'A track record of marketing to developers or writing technical content',
     source: 'required',
-    // The one charge that is not a flat "Guilty" — and the honesty is the point.
     plea: 'Partially guilty',
     testimony: [
       'I haven’t spent my career marketing to developers. But I did spend it learning complex domains well enough to earn the trust of technical audiences and translating them into something everyone else can understand.',

@@ -1,12 +1,17 @@
-# WANTED: Developer Marketer
+# Wanted: Developer Marketer
 
 A reply to [PostHog's Developer Marketer posting](https://posthog.com/careers/developer-marketer),
-built as a wild-west wanted poster that answers itself. Every requirement in the
-posting becomes a charge; every charge gets a plea and evidence.
+built as a wild-west wanted poster that answers itself.
 
-Astro, no template, no page builder. One HTML document, self-hosted fonts.
+Every requirement in the posting becomes a charge. Each charge gets a plea and
+evidence attached — writing samples, launched integrations, videos, photographs,
+a system diagram. One charge pleads _partially_ guilty, because one of them
+deserved an honest answer rather than a stretch.
 
-## Run it
+Astro, hand-built, no template. One page, no framework runtime shipped to the
+browser, ~200KB transferred.
+
+## Running it
 
 ```bash
 npm install
@@ -16,20 +21,9 @@ npm install
 npm run dev
 ```
 
-## Before you send it
+## Two skins, one document
 
-1. **Check the photo crops.** See [Photos](#photos) below.
-2. **Read `src/data/dossier.ts`.** All copy lives there. Charge 04 contains one
-   paragraph marked _optional_ about building this with a coding agent — decide
-   whether you want to say that out loud.
-3. **Check the links.** The three Google Docs are `drive_link` URLs. Confirm each
-   is shared to "anyone with the link can view" or a reviewer hits a request-access
-   wall, which is a bad first impression.
-4. **Set the deploy URL** in `astro.config.mjs` (`site:`).
-
-## The two skins
-
-The top-right button switches `data-mode` on `<html>`:
+The button in the top right switches `data-mode` on `<html>`:
 
 - `poster` — aged paper, letterpress, rubber stamps, tape
 - `plain` — the same content as a flat, sober document
@@ -39,94 +33,67 @@ overrides, and the choice persists in `localStorage`. It exists because a hiring
 manager reading forty applications should be able to switch off the theatre and
 still get the facts. `Cmd/Ctrl+P` prints either version.
 
-## Photos
+## Decisions worth explaining
 
-They live in `src/assets/evidence/` and go through `astro:assets`, so Astro
-resizes each one, emits a webp `srcset` and writes `width`/`height` for you. To
-swap one, replace the file keeping the name — a missing file fails the build
-rather than shipping a hole in the page.
+**Display type is sized against its container, not the viewport.** `WANTED` has no
+space in it, so it can never wrap — sized in `vw` it eventually punches straight
+through the poster's frame, because the poster stops growing at `44rem` while the
+viewport does not. It is sized in `cqw` against `.poster__frame` instead. Rye
+renders that word at ~4.91× its font size, so `19.5cqw` keeps it inside the rules
+from 320px up.
 
-| File          | Where it appears | Crop                     |
-| ------------- | ---------------- | ------------------------ |
-| `mugshot.jpg` | The poster       | 4:5, sepia               |
-| `arduino.jpg` | Exhibit A        | 1:1                      |
-| `diploma.jpg` | Exhibit B        | 1:1 (already square)     |
-| `robot.jpg`   | Exhibit C        | 1:1                      |
-| `retro.jpg`   | Exhibit D        | 1:1, focal point at 22%  |
+**The mugshot is a progressive enhancement, in three layers.** It starts behind an
+"no photograph on file" veil that lifts on hover, tap, keyboard focus or first
+scroll. With no JavaScript a `<noscript>` style removes the veil entirely; with
+broken JavaScript a `(hover: hover)` rule still lifts it. The veil is a `<button>`
+layered _over_ the image rather than wrapped around it, and it removes itself from
+the DOM once used, so the photo is never left inside a dead control.
 
-### The identity reveal
+**Videos are facades, not embeds.** An embedded YouTube player costs about a
+megabyte of JavaScript before anyone presses play, and the poster claims to care
+about Web Vitals. The page ships a thumbnail; the player is created on click,
+pointed at `youtube-nocookie.com`. There are zero iframes in the built HTML.
 
-The mugshot starts behind an opaque "no photograph on file" veil — an anonymous
-silhouette with a `?` where the face goes — and lifts on hover, tap, keyboard
-focus, or the reader's first scroll past 60px. It reveals once and stays revealed;
-re-hiding it would turn the page into a puzzle.
+**Fonts are self-hosted, Latin subsets only.** The `@fontsource` defaults ship
+Cyrillic, Vietnamese and legacy `.woff` too, which quadrupled the payload for
+glyphs this page never renders. Body text is Libre Baskerville rather than the
+typewriter face — Special Elite is charm at four words and punishment at forty, so
+it is restricted to short annotations.
 
-It is built as a progressive enhancement, in this order of fallback:
+**Captions and alt text are separate fields.** The captions are jokes. Alt text
+describes what is in the photograph, which is a different job.
 
-1. **No JS at all** — a `<noscript>` style removes the veil, so the photo is
-   simply visible. The face is never trapped behind a script that failed.
-2. **JS broken but CSS fine** — a `(hover: hover)` rule lifts the veil on hover
-   without any script involved.
-3. **Full JS** — sticky reveal, plus tap and scroll triggers for touch, and a
-   `suspect_identified` event with which trigger fired.
+**The reward figure was calculated, not copied.** PostHog publishes its
+compensation formula and its location factors, so the poster shows the Berlin
+number rather than the San Francisco range in the posting. The derivation is in
+[`src/data/dossier.ts`](src/data/dossier.ts).
 
-The veil is a `<button>` layered *over* the image rather than wrapped *around* it,
-and it removes itself from the DOM once used — so afterwards the photo is not left
-sitting inside a dead control, and there is no focus stop that does nothing. The
-hint line reads "Hover to identify" or "Tap to identify" depending on `(hover: hover)`.
+## Content
 
-`mugshot.jpg` is a head-and-shoulders crop cut from the original phone photo
-(`PXL_20260603_125605129.jpg`, 2736x3648) down to 1240x1550. The original is
-untouched if you want to reframe it.
+All copy lives in [`src/data/dossier.ts`](src/data/dossier.ts). Charges carry
+optional `exhibits`, `videos`, `photos`, `partners` and `blueprint`, each rendered
+inline in that charge's evidence panel — nothing lives in a separate section that
+has to be cross-referenced.
 
-The evidence photos are tall and get cropped square, so any whose subject sits
-away from the vertical centre needs a `focus` value in `dossier.ts` — that is
-why `retro.jpg` has one; a centred crop cut the top off the monitor.
+Photographs are in `src/assets/evidence/` and go through `astro:assets`, so each
+one is resized, converted to webp and given `width`/`height` automatically.
 
-## Type
-
-Four faces, each with one job:
-
-| Token          | Face              | Used for                                          |
-| -------------- | ----------------- | ------------------------------------------------- |
-| `--display`    | Rye               | WANTED, names, section headings                   |
-| `--slab`       | Bevan             | The role, charge titles, the reward figure         |
-| `--type`       | Libre Baskerville | All body copy — chosen to stay legible at 16px     |
-| `--annotation` | Special Elite     | Short typed marginalia only, never paragraphs      |
-| `--ui`         | system stack      | Micro labels, buttons, and the whole of plain mode |
-
-The typewriter is deliberately restricted to the alias, the poster footer, the
-letter salutation and the photo captions. It sets the tone in a few words and
-gets out of the way before it costs anyone their eyesight.
-
-`WANTED` is sized in `cqw` against `.poster__frame`, not in `vw`. The word has no
-space in it and therefore cannot wrap, so viewport-based sizing eventually drives
-it straight through the poster's rules. Rye renders it at ~4.91x its font-size;
-`19.5cqw` keeps it inside the frame at every width from 320px up.
-
-## Self-instrumentation (optional)
+## Self-instrumentation
 
 ```bash
 cp .env.example .env
 ```
 
-Add your PostHog project key and the page starts reporting on itself — pageviews,
-plus `mode_toggled` and `poster_printed`. With no key set, the `posthog-js` chunk
-is never loaded, so there is no cost to leaving it off.
-
-## Deploy
-
-Static output, so anything works. Cheapest paths:
-
-```bash
-npx vercel deploy --prod
-```
-
-Or `npm run build` and drag `dist/` onto Netlify.
+Add a PostHog project key and the page starts reporting on itself — pageviews,
+plus `mode_toggled`, `suspect_identified`, `reel_played` and `poster_printed`.
+With no key set the `posthog-js` chunk is never loaded, so there is no cost to
+leaving it off.
 
 ## A note on brand
 
 PostHog's brand guidelines prohibit third-party use of their hedgehog mascot and
 illustrative assets, and prohibit making something look like an official PostHog
 product. Nothing here uses their artwork or logos — it borrows the energy, not the
-assets, and the footer says so plainly.
+assets, and the page says so in the footer.
+
+Built with [Claude Code](https://claude.com/claude-code) as a pair programmer.

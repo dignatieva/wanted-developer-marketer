@@ -58,7 +58,14 @@ const { title, description } = Astro.props;
         const { default: posthog } = await import('posthog-js');
 
         posthog.init(key, {
-          api_host: import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
+          // First-party by default. /ingest is rewritten to PostHog by
+          // vercel.json, so the browser only ever talks to this origin: nothing
+          // for a tracking blocker to recognise, and no third-party request.
+          // posthog-js itself is bundled from npm, so no external script either.
+          api_host: import.meta.env.PUBLIC_POSTHOG_HOST ?? '/ingest',
+          // Where the real PostHog lives. Only used to build links out to the
+          // app (toolbar, replay); never contacted for data.
+          ui_host: 'https://eu.posthog.com',
           defaults: '2025-05-24',
           // The preset uses 'identified_only', which creates a person profile
           // only for identified users. Every reader of this page is anonymous, so

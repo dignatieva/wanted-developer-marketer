@@ -1,0 +1,394 @@
+---
+import { cv, experience, education, languages } from '../data/cv';
+---
+
+<section class="cv only-plain" id="cv" aria-label="Curriculum vitae">
+  <div class="cv__sheet">
+    <header class="cv__head">
+      <h1 class="cv__name">{cv.name}</h1>
+      <p class="cv__headline">{cv.headline}</p>
+
+      <ul class="cv__contact">
+        <li>
+          <a href={`mailto:${cv.contact.email}`}>{cv.contact.email}</a>
+        </li>
+        {cv.contact.phone && <li><a href={`tel:${cv.contact.phone.replace(/\s/g, '')}`}>{cv.contact.phone}</a></li>}
+        {cv.contact.location && <li>{cv.contact.location}</li>}
+        {
+          cv.contact.linkedIn && (
+            <li>
+              <a href={cv.contact.linkedIn} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </header>
+
+    <section class="cv__block">
+      <h2 class="cv__h2">Experience</h2>
+
+      {
+        experience.map((pos) => (
+          <article class="cv__pos">
+            <h3 class="cv__company">
+              {pos.company}
+              <span class="cv__where">{pos.location}</span>
+            </h3>
+
+            {pos.roles.map((role) => (
+              <div class="cv__role">
+                <div class="cv__when">
+                  <p class="cv__dates">
+                    {role.from} <span aria-hidden="true">–</span> {role.to}
+                  </p>
+                  <p class="cv__duration">{role.duration}</p>
+                </div>
+
+                <div class="cv__what">
+                  <h4 class="cv__title">{role.title}</h4>
+                  <ul class="cv__bullets">
+                    {role.bullets.map((b) => <li>{b}</li>)}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="cv__block">
+      <h2 class="cv__h2">Education</h2>
+      {
+        education.map((e) => (
+          <div class="cv__role cv__role--tight">
+            <div class="cv__when">
+              <p class="cv__dates">{e.years}</p>
+            </div>
+            <div class="cv__what">
+              <h4 class="cv__title">{e.institution}</h4>
+              <p class="cv__award">{e.award}</p>
+            </div>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="cv__block cv__block--last">
+      <h2 class="cv__h2">Languages</h2>
+      <ul class="cv__langs">
+        {
+          languages.map((l) => (
+            <li>
+              <span class="cv__lang">{l.name}</span>
+              <span class="cv__level">{l.level}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <footer class="cv__foot no-print">
+      <p>
+        This is the same information as the poster, laid out as a document.
+        <span class="cv__foot-sep" aria-hidden="true">·</span>
+        <button type="button" class="cv__print" data-cv-print>Save as PDF</button>
+      </p>
+    </footer>
+  </div>
+</section>
+
+<script>
+  document.querySelector('[data-cv-print]')?.addEventListener('click', () => {
+    window.posthog?.capture('cv_printed');
+    window.print();
+  });
+</script>
+
+<style>
+  /* This view only ever renders in plain mode, so it declares its own type and
+     colour rather than inheriting the poster's mode tokens. */
+  .cv {
+    --cv-ink: #18181b;
+    --cv-soft: #52525b;
+    --cv-faint: #8a8a94;
+    --cv-rule: #e4e4e7;
+    --cv-accent: #f54e00;
+    --cv-serif: 'Libre Baskerville', Georgia, serif;
+    --cv-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    padding: clamp(1.5rem, 5vw, 3.5rem) 0 clamp(2.5rem, 6vw, 4rem);
+    color: var(--cv-ink);
+    font-family: var(--cv-sans);
+  }
+
+  .cv__sheet {
+    width: min(100% - 2.5rem, 52rem);
+    margin-inline: auto;
+  }
+
+  /* --- Header --- */
+  .cv__head {
+    padding-bottom: clamp(1.25rem, 3vw, 1.75rem);
+    border-bottom: 2px solid var(--cv-ink);
+  }
+
+  .cv__name {
+    margin: 0;
+    font-family: var(--cv-serif);
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .cv__headline {
+    margin: 0.6rem 0 0;
+    max-width: 44rem;
+    font-size: clamp(0.875rem, 2.2vw, 0.9375rem);
+    line-height: 1.55;
+    color: var(--cv-soft);
+  }
+
+  .cv__contact {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.1rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    font-size: 0.8125rem;
+    color: var(--cv-soft);
+  }
+
+  /* Dots between items, not after the last one. */
+  .cv__contact li + li::before {
+    content: '·';
+    color: var(--cv-faint);
+    margin-right: 1.1rem;
+  }
+
+  .cv__contact a {
+    color: var(--cv-ink);
+    text-decoration-color: var(--cv-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .cv__contact a:hover {
+    color: var(--cv-accent);
+  }
+
+  /* --- Sections --- */
+  .cv__block {
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .cv__h2 {
+    margin: 0 0 1.1rem;
+    font-family: var(--cv-sans);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cv-faint);
+  }
+
+  .cv__pos + .cv__pos {
+    margin-top: clamp(1.4rem, 3vw, 1.9rem);
+    padding-top: clamp(1.4rem, 3vw, 1.9rem);
+    border-top: 1px solid var(--cv-rule);
+  }
+
+  .cv__company {
+    margin: 0 0 0.7rem;
+    font-family: var(--cv-serif);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .cv__where {
+    font-family: var(--cv-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cv-faint);
+    margin-left: 0.65rem;
+  }
+
+  /* Dates in a left rail. The eye can scan the timeline without reading. */
+  .cv__role {
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    gap: 0.35rem 1.75rem;
+    align-items: start;
+  }
+
+  .cv__role + .cv__role {
+    margin-top: 1.25rem;
+  }
+
+  .cv__role--tight + .cv__role--tight {
+    margin-top: 0.9rem;
+  }
+
+  .cv__when {
+    padding-top: 0.15rem;
+  }
+
+  .cv__dates {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--cv-ink);
+    white-space: nowrap;
+  }
+
+  .cv__duration {
+    margin: 0.1rem 0 0;
+    font-size: 0.75rem;
+    color: var(--cv-faint);
+  }
+
+  .cv__title {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 650;
+    letter-spacing: -0.005em;
+  }
+
+  .cv__bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .cv__bullets li {
+    position: relative;
+    padding-left: 0.95rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--cv-soft);
+    max-width: 46rem;
+  }
+
+  .cv__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--cv-accent);
+  }
+
+  .cv__award {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--cv-soft);
+  }
+
+  /* --- Languages --- */
+  .cv__langs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 0.75rem 1.5rem;
+  }
+
+  .cv__langs li {
+    display: grid;
+    gap: 0.15rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--cv-rule);
+  }
+
+  .cv__lang {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .cv__level {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cv-faint);
+  }
+
+  /* --- Footer --- */
+  .cv__foot {
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--cv-rule);
+    font-size: 0.8125rem;
+    color: var(--cv-faint);
+  }
+
+  .cv__foot p {
+    margin: 0;
+  }
+
+  .cv__foot-sep {
+    margin-inline: 0.5rem;
+  }
+
+  .cv__print {
+    font: inherit;
+    color: var(--cv-accent);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 34rem) {
+    .cv__role {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+
+    .cv__when {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding-top: 0;
+    }
+  }
+
+  /* --- Print: this is the deliverable, so it has to come out clean --- */
+  @media print {
+    .cv {
+      padding: 0;
+    }
+
+    .cv__sheet {
+      width: 100%;
+    }
+
+    /* Never split a job across a page break. */
+    .cv__pos,
+    .cv__role {
+      break-inside: avoid;
+    }
+
+    .cv__block {
+      break-before: auto;
+    }
+
+    .cv__bullets li {
+      color: #000;
+    }
+  }
+</style>

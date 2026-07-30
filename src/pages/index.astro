@@ -5,6 +5,7 @@ import Poster from '../components/Poster.astro';
 import Letter from '../components/Letter.astro';
 import ChargeSheet from '../components/ChargeSheet.astro';
 import Closing from '../components/Closing.astro';
+import Cv from '../components/Cv.astro';
 import { suspect } from '../data/dossier';
 ---
 
@@ -14,9 +15,18 @@ import { suspect } from '../data/dossier';
 >
   <TopBar />
   <main>
-    <Poster />
-    <Letter />
-    <ChargeSheet />
-    <Closing />
+    {/*
+      Both views ship in the HTML and CSS picks one, so switching is instant and
+      needs no JavaScript. Boring mode is no longer the poster restyled — it is
+      the actual CV, which is what someone reading forty applications wants.
+    */}
+    <div class="only-poster">
+      <Poster />
+      <Letter />
+      <ChargeSheet />
+      <Closing />
+    </div>
+
+    <Cv />
   </main>
 </Layout>

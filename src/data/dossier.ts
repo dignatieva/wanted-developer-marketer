@@ -58,7 +58,7 @@ export const letter = {
   salutation: 'Dear PostHog team,',
   question: 'Am I the marketer you’ve been looking for?',
   body: [
-    'You said you’re looking for a builder. So my first instinct was to build this page because no CV can convey my voice, my kind of weird, and my fit. Show, don’t tell. Right?',
+    'You mentioned you’re looking for a builder, so my first thought was to build this page. A dry, formal CV just can’t capture my kind of weird or tell a good story—or really show how I’d fit in here. So why not show you instead of just telling?',
   ],
   signoff: 'So I broke down your job requirements and told my story alongside them with real examples, part by part.',
 } as const;

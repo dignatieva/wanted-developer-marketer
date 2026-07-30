@@ -456,5 +456,5 @@ export const closing = {
     'The posting says the next steps are a couple of short interviews and a paid work sample that looks like the real job.',
     'This was the unpaid one. I did it anyway, because it was the fastest way to answer the question at the top of the page.',
   ],
-  ps: 'P.S. This page is instrumented with PostHog. If you scrolled this far, I know.',
+  ps: 'P.S. This page is instrumented with PostHog. If you scrolled this far, I know. 👁',
 } as const;

@@ -34,8 +34,7 @@ export const cv = {
      */
     phone: '+49 151 15778275',
     location: 'Berlin, Germany',
-    // Add the profile URL and it renders as a link.
-    linkedIn: '',
+    linkedIn: 'https://www.linkedin.com/in/darynarodriguez/',
   },
 } as const;
 

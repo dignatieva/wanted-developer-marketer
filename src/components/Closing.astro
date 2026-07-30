@@ -35,14 +35,6 @@ import { closing, suspect } from '../data/dossier';
 
     <footer class="foot">
       <p class="foot__ps">{closing.ps}</p>
-      <p class="foot__built">
-        Built with Astro. Hand-written, no page builder, no template — same reason 339 pages
-        left Webflow. Fonts are self-hosted. The whole page is one HTML document.
-      </p>
-      <p class="foot__disclaimer">
-        Unaffiliated with PostHog and not an official PostHog page — no PostHog artwork or
-        logos were used. Just an application, wearing a costume.
-      </p>
     </footer>
   </div>
 </section>
@@ -143,19 +135,9 @@ import { closing, suspect } from '../data/dossier';
   }
 
   .foot__ps {
-    margin: 0 0 0.9rem;
+    margin: 0;
     font-size: 1rem;
     color: var(--ink);
-  }
-
-  .foot__built,
-  .foot__disclaimer {
-    margin: 0 auto 0.6rem;
-    max-width: 34rem;
-    font-family: var(--ui);
-    font-size: 0.75rem;
-    line-height: 1.6;
-    color: var(--ink-faint);
   }
 
   @media (max-width: 30rem) {

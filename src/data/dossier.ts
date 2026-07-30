@@ -87,6 +87,7 @@ export const companyLinks: Record<string, string> = {
   Precoro: 'https://precoro.com/',
   YouScan: 'https://youscan.io/',
   Mercanis: 'https://mercanis.com/',
+  MomQuest: 'https://momquest.app/',
 };
 
 export type Partner = {
@@ -403,12 +404,12 @@ export const charges: Charge[] = [
     n: '06',
     charge: 'Nice to have: DevTool familiarity, and a product, growth or content marketing background',
     source: 'nice-to-have',
-    plea: 'Guilty on every count',
+    plea: 'Guilty',
     testimony: [
       'On the growth side, I’ve run everything from SEO and lifecycle emails to paid acquisition, webinars, product launches, and executive thought leadership.',
       'At Precoro, we grew organic traffic from 3.8k to 17k monthly visitors, increased SQLs 4x, and grew average deal size from ~$3.9k to ~$15k by rebuilding how marketing and sales worked together.',
-      'More recently at Mercanis, I took LinkedIn in-house, built a demand generation system around executive content, and reduced cost per opportunity by 87% while making attribution something Finance and Sales could actually trust. That curiosity has spilled into plenty of side projects.',
-      'I built MomQuest, an AI-powered platform for mothers in Germany, mostly because I experienced the problem myself and wanted to build a real product. I also took part in Lovable’s She Builds hackathons, spending weekends building prototypes simply to see what could be shipped in a couple of days.',
+      'More recently at Mercanis, I took LinkedIn in-house, built a demand generation system around executive content, and reduced cost per opportunity by 87% while making attribution something Finance and Sales could actually trust.',
+      'For recent side projects, I built MomQuest, an AI-powered platform for mothers in Germany, mostly because I experienced the problem myself and wanted to build a real product. I also took part in Lovable’s She Builds hackathons, spending weekends building prototypes simply to see what could be shipped in a couple of days.',
       'These days, I spend a lot of time with Astro, React, TypeScript, Tailwind, Sanity, GitHub, Supabase, Cloudflare Workers, Vercel, Cursor, Claude Code, ChatGPT, Figma, and whatever else gets the job done.',
       'Every new project is usually an excuse to learn another tool. It is an exciting time to be a marketer. We’re all beginners again in one way or another. I’d love to learn alongside the PostHog team.',
     ],

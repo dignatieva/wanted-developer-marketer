@@ -60,7 +60,7 @@ export const letter = {
   body: [
     'You said you’re looking for a builder. So my first instinct was to build this page because no CV can convey my voice, my kind of weird, and my fit. Show, don’t tell. Right?',
   ],
-  signoff: 'Everything below is a charge lifted straight from your job posting. I’m pleading guilty to all of them, and I brought evidence.',
+  signoff: 'So I broke down your job requirements and told my story alongside them with real examples, part by part.',
 } as const;
 
 export type Exhibit = {

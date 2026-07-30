@@ -31,10 +31,10 @@ import { cv, experience, education, languages } from '../data/cv';
 
       {
         experience.map((pos) => (
-          <article class="cv__pos">
+          <article class:list={['cv__pos', { 'cv__pos--break': pos.kind === 'break' }]}>
             <h3 class="cv__company">
               {pos.company}
-              <span class="cv__where">{pos.location}</span>
+              {pos.location && <span class="cv__where">{pos.location}</span>}
             </h3>
 
             {pos.roles.map((role) => (
@@ -48,9 +48,11 @@ import { cv, experience, education, languages } from '../data/cv';
 
                 <div class="cv__what">
                   <h4 class="cv__title">{role.title}</h4>
-                  <ul class="cv__bullets">
-                    {role.bullets.map((b) => <li>{b}</li>)}
-                  </ul>
+                  {role.bullets.length > 0 && (
+                    <ul class="cv__bullets">
+                      {role.bullets.map((b) => <li>{b}</li>)}
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}
@@ -208,6 +210,26 @@ import { cv, experience, education, languages } from '../data/cv';
     font-size: 1.125rem;
     font-weight: 700;
     letter-spacing: -0.01em;
+  }
+
+  /* Quieter than a job: it belongs on the timeline, but it is not a claim about
+     work done, so it should not compete with the roles either side of it. */
+  .cv__pos--break .cv__company {
+    font-family: var(--cv-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--cv-soft);
+    margin-bottom: 0;
+  }
+
+  .cv__pos--break .cv__title {
+    font-weight: 500;
+    color: var(--cv-soft);
+    margin-bottom: 0;
+  }
+
+  .cv__pos--break + .cv__pos {
+    border-top-style: dashed;
   }
 
   .cv__where {

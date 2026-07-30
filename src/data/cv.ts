@@ -20,6 +20,11 @@ export type Position = {
   location: string;
   /** Most companies have one role; YouScan has two. */
   roles: Role[];
+  /**
+   * A break renders quieter than a job and carries no bullets. Stating it beats
+   * leaving an unexplained hole in the date rail, which a reader will spot.
+   */
+  kind?: 'break';
 };
 
 export const cv = {
@@ -54,6 +59,21 @@ export const experience: Position[] = [
           'Building customer case studies, testimonials, and community initiatives to drive trust, loyalty, and adoption.',
           'Driving lead generation and demand gen to accelerate market expansion.',
         ],
+      },
+    ],
+  },
+  {
+    company: 'Career break',
+    location: '',
+    kind: 'break',
+    roles: [
+      {
+        title: 'Parental leave',
+        from: 'Aug 2024',
+        to: 'Aug 2025',
+        // Inclusive count, matching how every other duration here is written.
+        duration: '1 yr 1 mo',
+        bullets: [],
       },
     ],
   },

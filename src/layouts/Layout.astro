@@ -60,9 +60,71 @@ const { title, description } = Astro.props;
         posthog.init(key, {
           api_host: import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
           defaults: '2025-05-24',
+          // The preset uses 'identified_only', which creates a person profile
+          // only for identified users. Every reader of this page is anonymous, so
+          // that would produce events with nobody attached to them.
+          person_profiles: 'always',
         });
 
         window.posthog = posthog;
+
+        // Which skin they read it in. mode_toggled only fires on a change, so
+        // without this the default-mode readers are invisible.
+        posthog.register({
+          initial_mode: document.documentElement.dataset.mode ?? 'poster',
+        });
+
+        // PostHog cannot put a name to an anonymous visitor. Sending each person
+        // a link with ?from=… is the only reliable way to tell them apart, so it
+        // rides along on every event and becomes the person's identity.
+        const from = new URLSearchParams(location.search).get('from');
+        if (from) {
+          posthog.register({ invited_as: from });
+          posthog.identify(`invite:${from}`, { invited_as: from });
+        }
+
+        // --- Read depth ---
+        // How far someone actually got is the most interesting thing this page
+        // can report, and clicks say nothing about it. Derived from the existing
+        // DOM so no markup has to carry tracking attributes.
+        const marks: { el: Element; name: string }[] = [];
+
+        document.querySelectorAll('.charge').forEach((el) => {
+          const n = el.querySelector('.charge__n')?.textContent?.trim();
+          if (n) marks.push({ el, name: `charge-${n}` });
+        });
+
+        const claim = document.querySelector('#claim');
+        if (claim) marks.push({ el: claim, name: 'the-end' });
+
+        const seen = new Set<string>();
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+
+              const mark = marks.find((m) => m.el === entry.target);
+              if (!mark || seen.has(mark.name)) continue;
+
+              seen.add(mark.name);
+              observer.unobserve(entry.target);
+
+              posthog.capture('section_viewed', {
+                section: mark.name,
+                sections_seen: seen.size,
+              });
+
+              if (mark.name === 'the-end') {
+                posthog.capture('read_to_the_end', { sections_seen: seen.size });
+              }
+            }
+          },
+          // Two fifths visible: enough to mean "read", not merely "scrolled past".
+          { threshold: 0.4 }
+        );
+
+        marks.forEach((m) => observer.observe(m.el));
       }
     </script>
   </head>

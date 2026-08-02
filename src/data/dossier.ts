@@ -373,11 +373,11 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Guilty',
     testimony: [
-      'I worked across product and marketing for two products built around AI-powered text and image analysis for social media: LeadScanr and YouScan. This was before the current LLM wave, when “AI” mostly meant teaching models to recognize sentiment, logos, objects, emotions, and intent across millions of social media posts.',
-      'My role sat between users, product managers, linguists, and developers. It gave me a practical understanding of how NLP systems are built and improved: tokenization, stemming and lemmatization, sentiment classification, supervised and semi-supervised learning, annotation quality, training datasets, and the constant reality that human language is wonderfully messy.',
-      'Curious to understand more, I later completed the Lviv Data Science Summer School, focusing on Natural Language Processing and Social Network Analysis.',
-      'Fast-forward to today, and I’m building with AI instead of just marketing it. I use coding agents daily to prototype ideas, build websites, automate repetitive work, and learn new technologies by doing. This entire page was built in Astro from scratch in an afternoon, with an AI coding agent as my pair programmer.',
-      'That is what excites me most about agent-driven development. Not the “build an app in one prompt” demos, but the real work: giving context, reviewing decisions, debugging, iterating, and gradually turning an idea into something that ships. That’s the part I’d be most excited to write about for PostHog.',
+      'I cut my teeth at the intersection of product and marketing, working on two AI-powered platforms—LeadScanr and YouScan—built to analyze text and images from the wild, messy world of social media. This was before LLMs were all the rage; back then, “AI” meant teaching scrappy models to spot sentiment, logos, objects, emotions, and intent buried in millions of posts.',
+      'My seat? Squarely in the middle: users on one side, product managers, linguists, and developers on the other. That vantage point gave me a hands-on crash course in how NLP systems actually come together: tokenization, stemming, lemmatization, sentiment scoring, supervised and semi-supervised learning, annotation quality, training datasets, and the one constant in language: glorious, chaotic messiness.',
+      'Curiosity got the better of me, so I dove deeper: Lviv Data Science Summer School, where I geeked out on Natural Language Processing and Social Network Analysis.',
+      'Fast-forward to now: I’m not just marketing AI—I’m building with it. These days, coding agents are my daily sidekick. I use them to prototype ideas, spin up websites, automate the boring stuff, and tinker my way into new technologies.',
+      'That’s what gets me fired up about agent-driven development. Not the showy “one prompt, one app” stuff, but the real magic: giving context, reviewing decisions, debugging, iterating, slowly shaping an idea until it’s ready to ship. That’s the story I’d be most excited to tell for PostHog.',
     ],
     photos: [
       {

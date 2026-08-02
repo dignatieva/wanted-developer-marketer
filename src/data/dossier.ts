@@ -409,12 +409,12 @@ export const charges: Charge[] = [
     source: 'nice-to-have',
     plea: 'Guilty',
     testimony: [
-      'On the growth side, I’ve run everything from SEO and lifecycle emails to paid acquisition, webinars, product launches, and executive thought leadership.',
-      'At Precoro, we grew organic traffic from 3.8k to 17k monthly visitors, increased SQLs 4x, and grew average deal size from ~$3.9k to ~$15k by rebuilding how marketing and sales worked together.',
-      'More recently at Mercanis, I took LinkedIn in-house, built a demand generation system around executive content, and reduced cost per opportunity by 87% while making attribution something Finance and Sales could actually trust.',
-      'For recent side projects, I built MomQuest, an AI-powered platform for mothers in Germany, mostly because I experienced the problem myself and wanted to build a real product. I also took part in Lovable’s She Builds hackathons, spending weekends building prototypes simply to see what could be shipped in a couple of days.',
-      'These days, I spend a lot of time with Astro, React, TypeScript, Tailwind, Sanity, GitHub, Supabase, Cloudflare Workers, Vercel, Cursor, Claude Code, ChatGPT, Figma, and whatever else gets the job done.',
-      'Every new project is usually an excuse to learn another tool. It is an exciting time to be a marketer. We’re all beginners again in one way or another. I’d love to learn alongside the PostHog team.',
+      'On the growth front, I’ve worn a lot of hats: SEO, lifecycle emails, paid acquisition, webinars, product launches, executive thought leadership—you name it, I’ve probably run it at least once.',
+      'At Precoro, we took organic traffic from 3.8k to 17k monthly visitors, quadrupled SQLs, and grew the average deal size from about $3.9k to $15k. The secret? We rebuilt how marketing and sales worked together—no magic, just collaboration and a lot of trial and error.',
+      'At Mercanis, I brought LinkedIn in-house, built a demand gen engine around executive content, and slashed cost per opportunity by 87%. For once, attribution was something Finance and Sales could actually trust.',
+      'On the side, I built MomQuest—an AI-powered platform for mothers in Germany—mainly because I ran into the problem myself and wanted to turn frustration into something real. I’ve also jumped into Lovable’s She Builds hackathons, spending weekends spinning up prototypes just to see what could ship in a couple of days.',
+      'These days, my toolkit is a bit of a grab bag: Ad platforms, GTM, HubSpot, Astro, React, Sanity, GitHub, Supabase, Cloudflare Workers, Vercel, Cursor, Claude Code, ChatGPT, Figma, and more—whatever gets the job done.',
+      'Every new project is really just an excuse to learn more. Honestly, it’s a wild time to be a marketer: we’re all beginners again, one way or another. I’d love to learn alongside the PostHog team.',
     ],
   },
 ];

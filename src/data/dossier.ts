@@ -217,8 +217,11 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Guilty',
     testimony: [
-      'My first degree is in Publishing and Editing. I have been writing since I was six years old — no joke, call my mom and she will recite my first “poems” to you by heart.',
-      'Since then I have mostly written for other people’s brands, inside other people’s approval flows. Here is both kinds of evidence: the polished version, and the version with nobody standing behind me.',
+      'At 17, I hit a crossroads: Computer Engineering or Writing?',
+      'On one hand, I was coding my first simple HTML websites (back when sites were built on frames—yes, I’m that old), diving into RPGs, and building my own PCs from scratch.',
+      'On the other hand, I was obsessed with reading and writing; the one true magic that still exists in the world: creating stories.',
+      'In the end, I chose books and a degree in Publishing and Editing. Since then, I’ve worn many hats: editor, magazine designer, marketer (multiple times!), half-baked engineering student, customer success manager, product manager, and my favorite job of all: parent.',
+      'Below, you’ll find a few samples of my writing—at least, what I managed to salvage. Keeping records was never my strong suit.',
     ],
     exhibits: [
       {

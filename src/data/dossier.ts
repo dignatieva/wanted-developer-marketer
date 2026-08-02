@@ -55,12 +55,12 @@ export const suspect = {
 } as const;
 
 export const letter = {
-  salutation: 'Dear PostHog team,',
+  salutation: 'Dear Joe, Sara, Cleo, Adlet, Lizzie, and the PostHog team,',
   question: 'Am I the marketer you’ve been looking for?',
   body: [
-    'You mentioned you’re looking for a builder, so my first thought was to build this page. A dry, formal CV just can’t capture my kind of weird or tell a good story—or really show how I’d fit in here. So why not show you instead of just telling?',
+    'You said you’re looking for a builder, so my instinct was to build something immediately: this page. A dry, formal CV? It’s nearly impossible to let your humanity shine through one of those. So here’s a bit of my weirdness and personality, in my own words. No LLMs were used for the writing—just for the coding.',
   ],
-  signoff: 'So I broke down your job requirements and told my story alongside them with real examples, part by part.',
+  signoff: 'I broke down your job requirements and matched each one with a part of my own story. Real examples included, piece by piece.',
 } as const;
 
 export type Exhibit = {

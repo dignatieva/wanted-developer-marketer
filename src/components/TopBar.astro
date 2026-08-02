@@ -6,14 +6,20 @@ import { suspect } from '../data/dossier';
   <div class="bar__inner">
     <p class="bar__id">
       <span class="bar__flag" aria-hidden="true">✦</span>
-      Reply to notice <strong>#{suspect.noticeId}</strong>
+      Reply to notice <a class="bar__notice" href={suspect.jobUrl} target="_blank" rel="noreferrer"
+        ><span class="bar__proto">https://</span>posthog.com/careers/developer-marketer</a
+      >
       <span class="bar__sep" aria-hidden="true">·</span>
       <span class="bar__from">filed by {suspect.name}</span>
     </p>
 
     <button type="button" class="bar__toggle" data-mode-toggle aria-live="polite">
-      <span class="only-poster">Boring CV mode</span>
-      <span class="only-plain">Wanted poster mode</span>
+      <span class="only-poster"
+        ><span class="bar__long">Boring CV mode</span><span class="bar__short">CV mode</span></span
+      >
+      <span class="only-plain"
+        ><span class="bar__long">Wanted poster mode</span><span class="bar__short">Poster</span></span
+      >
     </button>
   </div>
 </div>
@@ -74,13 +80,18 @@ import { suspect } from '../data/dossier';
     text-transform: uppercase;
   }
 
-  .bar__id strong {
+  /* A URL read aloud in caps is not a URL. Drops the bar's uppercase and its
+     wide tracking so the address stays scannable at 11px. */
+  .bar__notice {
     font-weight: 700;
     color: var(--yellow);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    text-underline-offset: 2px;
   }
 
-  :root[data-mode='plain'] .bar__id strong {
-    color: inherit;
+  :root[data-mode='plain'] .bar__notice {
+    color: var(--blue);
   }
 
   .bar__flag {
@@ -125,10 +136,47 @@ import { suspect } from '../data/dossier';
     background: var(--paper-deep);
   }
 
+  /* The address is the longest thing in the bar, so it sheds weight first:
+     protocol goes, then the byline, before anything is allowed to overflow. */
+  /* 52rem, not 48: the full line needs ~816px of viewport to stay on one row,
+     and the bar wrapping to two lines shoves the poster down on every scroll. */
+  @media (max-width: 52rem) {
+    .bar__proto {
+      display: none;
+    }
+  }
+
+  .bar__short {
+    display: none;
+  }
+
   @media (max-width: 34rem) {
     .bar__from,
     .bar__sep {
       display: none;
+    }
+
+    /* A phone cannot fit the address next to a full-width toggle, and the
+       address is the part worth keeping whole — so the button gives up its
+       words and the bar gives up its tracking, which buys the URL a second
+       line instead of a third. */
+    .bar__long {
+      display: none;
+    }
+
+    .bar__short {
+      display: inline;
+    }
+
+    .bar__id {
+      letter-spacing: 0.05em;
+    }
+
+    .bar__notice {
+      letter-spacing: 0;
+      /* The address only breaks at / and -, which strands half a line. Breaking
+         anywhere packs it onto two rows instead of three. */
+      word-break: break-all;
     }
   }
 </style>

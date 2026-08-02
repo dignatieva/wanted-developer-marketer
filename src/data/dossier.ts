@@ -396,11 +396,11 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Partially guilty',
     testimony: [
-      'I haven’t spent my career marketing to developers. But I did spend it learning complex domains well enough to earn the trust of technical audiences and translating them into something everyone else can understand.',
-      'I’ve done it for IT Service Management, learning how enterprise IT teams, administrators, service desks, and infrastructure teams actually work before writing content, campaigns, and product messaging for them.',
-      'I did it again in procurement, where I learned the language of sourcing, logistics, operations, and supply chains well enough to build positioning, launch products, and explain complex workflows to buyers, users, and executives.',
-      'Earlier in my career, I even helped create educational materials around machinery safety, CE marking, and plant operations.',
-      'The domain changes. My approach doesn’t: be curious, ask embarrassing questions, click every button, then write the very thing you wish you’d had on day one.',
+      'I won’t pretend I’ve spent my whole career marketing to developers. But I have made a habit of diving headfirst into complex domains—sticking around long enough to earn the trust of technical folks, then translating their world into something the rest of us can actually understand.',
+      'Take IT Service Management: I learned how enterprise IT teams, admins, service desks, and infrastructure folks really work before I wrote a single campaign, piece of content, or product message for them.',
+      'Procurement? Same playbook. I had to pick up the language of sourcing, logistics, operations, and supply chains—well enough to build out positioning, launch products, and explain gnarly workflows to buyers, users, and execs.',
+      'Earlier on, I even helped build training materials about machinery safety, CE marking, and plant operations. (Turns out: nothing teaches humility like explaining a safety standard to someone who’s spent decades on the shop floor.)',
+      'The domain always changes. My approach never does: stay curious, ask embarrassing questions, click every button, then write the thing you wish someone had handed you on day one.',
     ],
   },
   {

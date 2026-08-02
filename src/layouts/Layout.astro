@@ -9,6 +9,7 @@ import '@fontsource/special-elite/latin-400.css';
 import '@fontsource/libre-baskerville/latin-400.css';
 import '@fontsource/libre-baskerville/latin-400-italic.css';
 import '../styles/global.css';
+import { sourceNotice } from '../data/dossier';
 
 interface Props {
   title: string;
@@ -137,6 +138,17 @@ const { title, description } = Astro.props;
   </head>
 
   <body>
+    {/*
+      set:html because Astro emits template comments as-is but will not
+      interpolate an expression inside one — the notice has to arrive already
+      wrapped. First node in the body, so it is the first thing in the elements
+      panel and near the top of view-source.
+    */}
+    <Fragment set:html={`<!--\n${sourceNotice}\n-->`} />
+
+    {/* is:inline so it runs during parse rather than after the bundle loads. */}
+    <script is:inline set:html={`console.log(${JSON.stringify(sourceNotice)});`} />
+
     <slot />
   </body>
 </html>

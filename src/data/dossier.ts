@@ -476,3 +476,33 @@ export const closing = {
   },
   ps: 'P.S. This page is instrumented with PostHog. If you scrolled this far, I know. 👁',
 } as const;
+
+/**
+ * For the reader who opens dev tools before they finish the poster. Printed
+ * twice: as the first node inside <body>, so it heads up view-source and the
+ * elements panel, and to the console.
+ *
+ * Must never contain the three characters that would close an HTML comment
+ * early — the rules here are box-drawing glyphs, not hyphens, for that reason.
+ */
+export const sourceNotice = `
+  ╔═══════════════════════════════════════════════════════════════════╗
+  ║                            ✦  NOTICE  ✦                           ║
+  ╚═══════════════════════════════════════════════════════════════════╝
+
+     ██   ██  ██  ██████   ███████     ███    ███  ███████
+     ██   ██  ██  ██   ██  ██          ████  ████  ██
+     ███████  ██  ██████   █████       ██ ████ ██  █████
+     ██   ██  ██  ██  ██   ██          ██  ██  ██  ██
+     ██   ██  ██  ██   ██  ███████     ██      ██  ███████
+
+  ─────────────────────────────────────────────────────────────────────
+     WANTED BY  ·  Daryna Rodriguez
+     FOR        ·  Developer Marketer, PostHog
+     LAST SEEN  ·  building this page instead of attaching a CV
+     REWARD     ·  one (1) marketer who reads the source
+     APPLY TO   ·  darynarodriguezaguilar@gmail.com
+  ─────────────────────────────────────────────────────────────────────
+
+     You opened dev tools first. So did I. That is rather the point.
+`;

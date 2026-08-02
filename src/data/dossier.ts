@@ -326,10 +326,10 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Guilty',
     testimony: [
-      'This month, I moved an entire website, 339 pages, from Webflow to Astro. Research, planning, implementation, migration. The goal was simple: give the team the ability to ship pages without waiting for me or fighting Webflow every time (we don’t have a single developer in Marketing).',
-      'Long before AI made building websites feel like cheating, I built a handful of WordPress sites for small businesses to earn some extra money and learn something new. During an internship at ePages, I even built a WordPress plugin. As far as I know, it’s still quietly doing its job somewhere on the internet.',
-      'I studied Information Engineering and spent plenty of time writing C for microcontrollers. I definitely couldn’t do that today without a lot of Googling, but it changed how I think about systems and gave me a solid understanding of algorithms, software architecture, and databases.',
-      'This page is built in Astro from scratch. No template. It felt like the appropriate way to apply to a company that likes people who build.',
+      'Just this month, I moved an entire website—339 pages—from Webflow to Astro. Research, planning, implementation, migration: all on me. The goal? Give the team the freedom to ship pages without waiting for me or wrestling with Webflow every time. (Fun fact: we don’t have a single developer in Marketing.)',
+      'Long before AI made building websites feel like cheating, I was cobbling together WordPress sites for small businesses. Extra cash, yes—but mostly to learn something new. During an internship at ePages, I built a WordPress plugin from scratch. As far as I know, it’s still out there somewhere.',
+      'I studied Information Engineering and spent a fair chunk of time wrangling C for microcontrollers. I’m not saying I could do it today without a hefty dose of Googling, but that era rewired how I think about systems, and left me with a real, working knowledge of algorithms, architecture, and databases.',
+      'This page? Built in Astro, my favorite framework of late.',
     ],
     exhibits: [
       {

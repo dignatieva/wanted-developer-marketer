@@ -50,8 +50,11 @@ export const suspect = {
       href: 'mailto:darynarodriguezaguilar@gmail.com',
       text: 'darynarodriguezaguilar@gmail.com',
     },
-    // LinkedIn goes here once the profile URL is in:
-    // { label: 'LinkedIn', href: 'https://www.linkedin.com/in/…', text: 'linkedin.com/in/…' },
+    {
+      label: 'LinkedIn',
+      href: 'https://www.linkedin.com/in/darynarodriguez/',
+      text: 'linkedin.com/in/darynarodriguez',
+    },
   ],
 } as const;
 

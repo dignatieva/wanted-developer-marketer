@@ -6,10 +6,6 @@ import { alsoKnownFor, mugshot, stamps, suspect } from '../data/dossier';
 <section class="poster-zone">
   <article class="poster">
     <div class="poster__frame">
-      <p class="poster__notice overline">
-        Notice №&nbsp;{suspect.noticeId} &nbsp;·&nbsp; Marketing Department &nbsp;·&nbsp; Posted this quarter
-      </p>
-
       <h1 class="poster__word display letterpress">Wanted</h1>
 
       <div class="rule poster__rule" aria-hidden="true">
@@ -198,12 +194,6 @@ import { alsoKnownFor, mugshot, stamps, suspect } from '../data/dossier';
     border: 0;
     text-align: left;
     padding: clamp(1.5rem, 4vw, 2.5rem);
-  }
-
-  .poster__notice {
-    margin: 0 0 clamp(0.75rem, 2vw, 1.25rem);
-    font-size: 0.625rem;
-    letter-spacing: 0.18em;
   }
 
   /* The word itself. Big, letterspaced, pressed into the page.

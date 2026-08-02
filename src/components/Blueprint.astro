@@ -41,23 +41,6 @@ const { blueprint } = Astro.props;
     </ul>
   </div>
 
-  <dl class="bp__stats">
-    {
-      blueprint.stats.map((s) => (
-        <div class="bp__stat">
-          <dt class="bp__stat-value display">{s.value}</dt>
-          <dd class="bp__stat-label">{s.label}</dd>
-        </div>
-      ))
-    }
-  </dl>
-
-  <figcaption class="bp__foot">
-    {blueprint.footnote}{' '}
-    <a class="link" href={blueprint.profileHref} target="_blank" rel="noreferrer">
-      github.com/dignatieva
-    </a>
-  </figcaption>
 </figure>
 
 <style>
@@ -192,52 +175,6 @@ const { blueprint } = Astro.props;
     border-color: var(--rule);
     color: var(--ink-soft);
     border-radius: 4px;
-  }
-
-  /* --- Stats --- */
-  .bp__stats {
-    margin: clamp(1rem, 2.5vw, 1.35rem) 0 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-    gap: clamp(0.7rem, 2vw, 1.1rem);
-  }
-
-  .bp__stat {
-    border-top: 3px double var(--ink);
-    padding-top: 0.5rem;
-  }
-
-  :root[data-mode='plain'] .bp__stat {
-    border-top: 1px solid var(--rule);
-  }
-
-  .bp__stat-value {
-    font-size: clamp(1.5rem, 5vw, 2rem);
-    color: var(--red);
-    line-height: 1;
-  }
-
-  :root[data-mode='plain'] .bp__stat-value {
-    font-family: var(--ui);
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--ink);
-  }
-
-  .bp__stat-label {
-    margin: 0.25rem 0 0;
-    font-family: var(--ui);
-    font-size: 0.6875rem;
-    line-height: 1.45;
-    color: var(--ink-soft);
-  }
-
-  .bp__foot {
-    margin: clamp(0.8rem, 2vw, 1rem) 0 0;
-    font-family: var(--ui);
-    font-size: 0.6875rem;
-    line-height: 1.6;
-    color: var(--ink-faint);
   }
 
   /* Stack the chain vertically once the row can no longer hold it side by side. */

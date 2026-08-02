@@ -118,9 +118,6 @@ export type Blueprint = {
   /** Each node carries the connector that follows it; the last one has none. */
   chain: { name: string; role: string; connector?: string; retired?: boolean }[];
   builtWith: { name: string; skills: string[] };
-  stats: { value: string; label: string }[];
-  footnote: string;
-  profileHref: string;
 };
 
 /**
@@ -146,14 +143,6 @@ export const rebuild: Blueprint = {
     name: 'Claude Code',
     skills: ['SEO', 'QA', 'Site health monitoring'],
   },
-  stats: [
-    { value: '449', label: 'contributions in the last year' },
-    { value: '177', label: 'commits in July 2026 alone' },
-    { value: '175', label: 'of those in the Mercanis repo' },
-  ],
-  footnote:
-    'The Mercanis repository is private, so the commit counts are visible on my own profile rather than yours. The contribution graph is public.',
-  profileHref: 'https://github.com/dignatieva',
 };
 
 export type PhotoEvidence = {

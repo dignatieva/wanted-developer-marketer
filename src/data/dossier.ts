@@ -13,6 +13,7 @@ import arduinoImg from '../assets/evidence/arduino.jpg';
 import diplomaImg from '../assets/evidence/diploma.jpg';
 import robotImg from '../assets/evidence/robot.jpg';
 import retroImg from '../assets/evidence/retro.jpg';
+import tortoiseImg from '../assets/evidence/tortoise.jpg';
 
 export const suspect = {
   name: 'Daryna Rodriguez',
@@ -455,9 +456,20 @@ export const mugshot = {
 
 export const closing = {
   heading: 'If this is the person you’re looking for',
-  body: [
-    'The posting says the next steps are a couple of short interviews and a paid work sample that looks like the real job.',
-    'This was the unpaid one. I did it anyway, because it was the fastest way to answer the question at the top of the page.',
+  intro: 'A few things you won’t find on my resume:',
+  asides: [
+    'I write better than I talk. Put me in a meeting or an interview, and I’ll get stage fright—at least until I know the crowd. (Classic introvert energy.)',
+    'If I could design my dream hideout, it’d be a secret room lined with books and perfect reading light. That’s my battery recharge.',
+    'In every RPG, I pick the mage or warlock—because who doesn’t want a little magic?',
+    'I’m obsessed with tortoises. I have two at home and once volunteered in the Galápagos on a conservation project with giant tortoises. (I’m already plotting my return.)',
+    'At home, I share life with the most hyperactive, wild, boundary-pushing toddler I’ve ever met. Some days, it’s a rollercoaster. Every day, it’s an adventure.',
+    'And for the record: pineapple on pizza? Absolutely not.',
   ],
+  /** Sits beside the list, so it lands next to the tortoise line. */
+  photo: {
+    src: tortoiseImg,
+    alt: 'Daryna crouching beside a giant tortoise at a conservation centre in the Galápagos.',
+    caption: 'Galápagos. Tortoise conservation, on my own time.',
+  },
   ps: 'P.S. This page is instrumented with PostHog. If you scrolled this far, I know. 👁',
 } as const;

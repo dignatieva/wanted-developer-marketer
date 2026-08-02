@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { closing, suspect } from '../data/dossier';
 ---
 
@@ -8,7 +9,30 @@ import { closing, suspect } from '../data/dossier';
       <p class="overline">Claim the reward</p>
       <h2 class="close__title display letterpress">{closing.heading}</h2>
 
-      {closing.body.map((p) => <p class="close__p lede">{p}</p>)}
+      <p class="close__p lede">{closing.intro}</p>
+
+      {/*
+        Text and photo share a row on wide screens so the picture lands beside
+        the tortoise line rather than after the punchline about pizza. On a
+        phone the photo drops below the list, where it reads as a sign-off.
+      */}
+      <div class="close__aside">
+        <ul class="close__list">
+          {closing.asides.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <figure class="close__photo">
+          <span class="close__tape" aria-hidden="true"></span>
+          <Image
+            src={closing.photo.src}
+            alt={closing.photo.alt}
+            widths={[260, 520]}
+            sizes="(max-width: 44rem) 70vw, 240px"
+            loading="lazy"
+          />
+          <figcaption class="close__cap">{closing.photo.caption}</figcaption>
+        </figure>
+      </div>
 
       <div class="close__actions">
         <a class="btn btn--red" href={`mailto:${suspect.email}?subject=Re: Notice %23${suspect.noticeId}`} data-contact>
@@ -85,6 +109,121 @@ import { closing, suspect } from '../data/dossier';
 
   .close__p {
     margin: 0 0 0.85rem;
+  }
+
+  /* --- The unlisted qualifications --- */
+  /* flow-root, not grid: a side column would pin every item to ~38 characters
+     a line. Floating lets the photo sit against the tortoise entry and hands
+     the full measure back to the entries below it. */
+  .close__aside {
+    display: flow-root;
+    margin-top: 0.4rem;
+  }
+
+  .close__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .close__list li {
+    /* Hanging indent so a wrapped line aligns under its own text, not the mark. */
+    padding-left: 1.1rem;
+    text-indent: -1.1rem;
+    line-height: 1.6;
+  }
+
+  .close__list li::before {
+    content: '✦';
+    color: var(--red);
+    margin-right: 0.5rem;
+  }
+
+  :root[data-mode='plain'] .close__list li::before {
+    content: '–';
+    color: var(--ink-faint);
+  }
+
+  /* --- Photo --- */
+  .close__photo {
+    position: relative;
+    float: right;
+    width: 13rem;
+    margin: 0.2rem 0 1rem 1.75rem;
+    background: var(--paper-lit);
+    padding: 0.6rem 0.6rem 0;
+    border: 1px solid var(--rule);
+    rotate: 1.6deg;
+    box-shadow: 0 14px 30px -18px rgba(36, 28, 20, 0.75);
+  }
+
+  .close__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    /* Crops toward the top: the tortoise and her face live in the upper half,
+       and a centre crop gives the frame a lot of empty gravel. */
+    object-position: 50% 32%;
+    filter: sepia(0.24) saturate(0.88);
+  }
+
+  :root[data-mode='plain'] .close__photo {
+    rotate: none;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  :root[data-mode='plain'] .close__photo :global(img) {
+    filter: none;
+    border-radius: 4px;
+  }
+
+  .close__tape {
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    translate: -50% 0;
+    width: 4.5rem;
+    height: 1.4rem;
+    rotate: -2deg;
+    background: rgba(214, 178, 92, 0.4);
+    border-left: 1px solid rgba(214, 178, 92, 0.6);
+    border-right: 1px solid rgba(214, 178, 92, 0.6);
+  }
+
+  :root[data-mode='plain'] .close__tape {
+    display: none;
+  }
+
+  .close__cap {
+    padding: 0.55rem 0.15rem 0.6rem;
+    font-family: var(--annotation);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  :root[data-mode='plain'] .close__cap {
+    font-family: var(--ui);
+    font-size: 0.75rem;
+    text-align: left;
+    color: var(--ink-faint);
+  }
+
+  /* Below this the card is too narrow for text to flow beside the photo at all,
+     so it stops floating and becomes a sign-off under the list. */
+  @media (max-width: 44rem) {
+    .close__photo {
+      float: none;
+      width: min(70%, 15rem);
+      margin: 1.25rem auto 0;
+    }
   }
 
   .close__actions {

@@ -279,11 +279,11 @@ export const charges: Charge[] = [
     source: 'required',
     plea: 'Guilty',
     testimony: [
-      'I’ve planned, coordinated, and launched products, from major features to integration partnerships with Amazon, NetSuite, QuickBooks, Slack, and others. That meant owning whatever the launch needed: positioning, messaging, sales enablement, customer communications, email campaigns, paid ads, landing pages, product videos, webinars, and making sure it all came together into one coherent GTM motion.',
-      'At YouScan and LeadScanr, I worked closely with Product, writing PRDs, roadmaps, documentation, onboarding materials, email sequences, in-app tooltips, Intercom flows, and Help Center content to translate product requirements into user experiences.',
-      'At Precoro, I partnered with Product and Sales on positioning, battlecards, sales decks, product messaging, and end-to-end integration launches. I also designed trial onboarding, lifecycle email sequences, feature announcements, and adoption campaigns.',
-      'At Mercanis, my focus shifted toward growth marketing: translating product capabilities into customer pain points and outcomes through messaging frameworks, case studies, landing pages, and campaign assets.',
-      'Throughout my career, I’ve naturally gravitated toward the space between Product, Marketing, Sales, and Customer Success. I’ve never been particularly attached to job descriptions. If something needed building for a launch to succeed, I usually ended up building it.',
+      'I’ve planned, coordinated, and launched products; sometimes big, shiny features, sometimes complex integrations with Amazon, NetSuite, QuickBooks, Slack, and the like. When a launch was on the line, I owned whatever it needed: positioning, messaging, sales enablement, customer communications, email campaigns, paid ads, landing pages, product videos, webinars—the whole toolkit. My job was to make sure everything came together into one coherent go-to-market story.',
+      'At YouScan and LeadScanr, I was the bridge between Product and everyone else: writing PRDs, roadmaps, documentation, onboarding flows, email sequences, in-app tooltips, Intercom journeys, and Help Center content. My job: turn product requirements into user experiences.',
+      'At Precoro, I teamed up with Product and Sales on everything from positioning and battlecards to sales decks, product messaging, and full-cycle integration launches. I also mapped out trial onboarding, crafted lifecycle email sequences, and dreamed up feature announcements and adoption campaigns.',
+      'At Mercanis, my focus pivoted to growth marketing—translating product capabilities into real customer stories and outcomes. Messaging frameworks, case studies, landing pages, campaign assets—I built them all to connect what we made to what our customers actually needed.',
+      'If there’s a theme running through my career, it’s this: I naturally gravitate to the space between Product, Marketing, Sales, and Customer Success. Job titles never really stuck; if something needed building for a launch to succeed, I was the one who built it; even if it meant drawing the map as I went.',
     ],
     // Shown as a row of plates rather than a list of links — the point of this
     // charge is the logos, and each one goes to the live integration page.
